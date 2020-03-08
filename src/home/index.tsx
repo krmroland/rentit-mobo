@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  topNavigation: {},
 });
 
 const EditIcon = style => <Icon {...style} name="search-outline" />;
@@ -24,6 +25,7 @@ export default ({ navigation }): React.ReactElement => {
   return (
     <SafeAreaLayout style={styles.container} insets="top">
       <TopNavigation
+        style={styles.topNavigation}
         title="Rentals"
         titleStyle={[tw.text2xl]}
         rightControls={renderRightControls()}

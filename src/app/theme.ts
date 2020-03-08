@@ -1,4 +1,4 @@
-import { light } from '@eva-design/eva';
+import { light } from '@eva-design/material';
 
 export default {
   ...light,

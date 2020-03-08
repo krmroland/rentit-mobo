@@ -18,8 +18,8 @@ const navigatorTheme = {
 export default (): React.ReactElement => (
   <NavigationContainer theme={navigatorTheme}>
     <Stack.Navigator headerMode="none">
-      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Auth" component={LoginScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
