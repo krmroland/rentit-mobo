@@ -3,6 +3,8 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '@/auth/login';
 
+import HomeScreen from '@/home';
+
 const Stack = createStackNavigator();
 
 const navigatorTheme = {
@@ -16,6 +18,7 @@ const navigatorTheme = {
 export default (): React.ReactElement => (
   <NavigationContainer theme={navigatorTheme}>
     <Stack.Navigator headerMode="none">
+      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Auth" component={LoginScreen} />
     </Stack.Navigator>
   </NavigationContainer>
