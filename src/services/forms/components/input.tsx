@@ -1,24 +1,17 @@
 import React from 'react';
 
-import { Input, Icon } from '@ui-kitten/components';
+import { Text } from 'react-native';
+import { tw } from 'react-native-tailwindcss';
+
+import { TextInput } from 'react-native-paper';
 
 export default props => {
-  const { iconName, error, status = 'basic', size = 'large', ...inputProps } = props;
-
-  const iconProps = {};
-
-  if (iconName) {
-    iconProps.icon = styles => <Icon name={iconName} {...styles} />;
-  }
+  const { mode = 'outlined', error, ...inputProps } = props;
 
   return (
-    <Input
-      size={size}
-      autoCapitalize="none"
-      auto
-      {...{ ...inputProps, ...iconProps }}
-      status={error ? 'danger' : status}
-      caption={error}
-    />
+    <React.Fragment>
+      <TextInput {...inputProps} mode={mode} error={!!error} autoCapitalize="none" />
+      {error && <Text style={[tw.mT1, tw.pX1, tw.textRed700]}> {error}</Text>}
+    </React.Fragment>
   );
 };

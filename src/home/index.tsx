@@ -1,36 +1,63 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
-import { TopNavigation, TopNavigationAction, Icon } from '@ui-kitten/components';
-import { tw } from 'react-native-tailwindcss';
-import { SafeAreaLayout } from '@/components/safe-area-layout';
-import Dashboard from './dashboard';
+import { Text } from 'react-native';
+import { Appbar } from 'react-native-paper';
+import Tabs from './tabs';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topNavigation: {},
-});
+import SQLite from 'react-native-sqlite-storage';
 
-const EditIcon = style => <Icon {...style} name="search-outline" />;
+export default () => {
+  var db = SQLite.openDatabase(
+    'test.db',
+    '1.0',
+    'Test Database',
+    200000,
+    () => {
+      console.log('opened');
+    },
+    () => {
+      console.log('closed');
+    },
+  );
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM Employees a, Departments b WHERE a.department = b.department_id',
+      [],
+      (tx, results) => {
+        console.log('Query completed');
 
-const MenuIcon = style => <Icon {...style} name="more-vertical" />;
+        // Get rows with Web SQL Database spec compliance.
 
-const EditAction = props => <TopNavigationAction {...props} icon={EditIcon} />;
-const MenuAction = props => <TopNavigationAction {...props} icon={MenuIcon} />;
+        var len = results.rows.length;
+        for (let i = 0; i < len; i++) {
+          let row = results.rows.item(i);
+          console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`);
+        }
 
-const renderRightControls = () => [<EditAction />, <MenuAction />];
+        // Alternatively, you can use the non-standard raw method.
 
-export default ({ navigation }): React.ReactElement => {
+        /*
+        let rows = results.rows.raw(); // shallow copy of rows Array
+
+        rows.map(row => console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`));
+      */
+      },
+    );
+  });
+  const goBack = () => console.log('Went back');
+
+  const handleSearch = () => console.log('Searching');
+
+  const handleMore = () => console.log('Shown more');
+
   return (
-    <SafeAreaLayout style={styles.container} insets="top">
-      <TopNavigation
-        style={styles.topNavigation}
-        title="Rentals"
-        titleStyle={[tw.text2xl]}
-        rightControls={renderRightControls()}
-      />
-      <Dashboard />
-    </SafeAreaLayout>
+    <React.Fragment>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={goBack} />
+        <Appbar.Content title="RENTIT"></Appbar.Content>
+        <Appbar.Action icon="magnify" onPress={handleSearch} />
+        <Appbar.Action icon="dots-vertical" onPress={handleMore} />
+      </Appbar.Header>
+      <Tabs />
+    </React.Fragment>
   );
 };

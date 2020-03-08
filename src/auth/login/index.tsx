@@ -4,11 +4,10 @@ import { useDeviceName, getUniqueId } from 'react-native-device-info';
 import get from 'lodash/get';
 import { tw } from 'react-native-tailwindcss';
 import { Layout, StyleService, Text, useStyleSheet, Icon, Card } from '@ui-kitten/components';
-import { EyeIcon, EyeOffIcon, PersonIcon } from './extra/icons';
 import { KeyboardAvoidingView } from './extra/3rd-party';
 import { useAPIForm, Input, Button } from '@/services/forms';
 
-import { login } from '@/services/auth';
+import { context } from '@/services/auth';
 
 export default ({ navigation }): React.ReactElement => {
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
@@ -21,6 +20,14 @@ export default ({ navigation }): React.ReactElement => {
   ]);
 
   const styles = useStyleSheet(themedStyles);
+
+  const { user, fetching: fetchingUser, update: updateUser } = React.useContext(context);
+
+  React.useEffect(() => {
+    if (user) {
+      navigation.navigate('Home');
+    }
+  }, [user]);
 
   const onSignUpButtonPress = (): void => {
     // navigation && navigation.navigate('SignUp2');
@@ -39,10 +46,8 @@ export default ({ navigation }): React.ReactElement => {
 
     form.post('api/v1/auth/token', {
       beforeSubmit: data => ({ ...data, device_name: deviceName.result, device_id: getUniqueId() }),
-      onSuccess(user) {
-        login(user)
-          .then(console.log('all went well'))
-          .catch(error => console.log(error));
+      onSuccess({ user, token }) {
+        updateUser(user, token);
       },
       onError(error) {
         const message = get(
@@ -59,7 +64,7 @@ export default ({ navigation }): React.ReactElement => {
     <KeyboardAvoidingView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text category="h1" status="control">
-          Rentals
+          RENTIT
         </Text>
         <Text style={styles.signInLabel} category="s2" status="control">
           Sign in to your account
@@ -74,27 +79,23 @@ export default ({ navigation }): React.ReactElement => {
           </Card>
         )}
         <Input
-          placeholder="Email"
+          label="Email"
           value={form.values.email}
-          icon={PersonIcon}
           error={form.errors.email}
           onChangeText={form.handleChange('email')}
         />
 
         <Input
+          label="Password"
           style={styles.passwordInput}
           value={form.values.password}
           error={form.errors.password}
           onChangeText={form.handleChange('password')}
-          placeholder="Password"
-          icon={passwordVisible ? EyeIcon : EyeOffIcon}
-          secureTextEntry={!passwordVisible}
-          onIconPress={onPasswordIconPress}
         />
         <View style={styles.forgotPasswordContainer}>
           <Button
             style={styles.forgotPasswordButton}
-            appearance="ghost"
+            mode="text"
             status="basic"
             onPress={onForgotPasswordButtonPress}
           >
@@ -104,19 +105,15 @@ export default ({ navigation }): React.ReactElement => {
       </Layout>
       <Button
         style={styles.signInButton}
-        iconName="lock-outline"
-        loading={form.isBusy || deviceName.loading}
+        mode="contained"
+        icon="login"
+        loading={form.isBusy || deviceName.loading || fetchingUser}
         onPress={onPressLoginButton}
         disabled={form.hasErrors}
       >
         SIGN IN
       </Button>
-      <Button
-        style={styles.signUpButton}
-        appearance="ghost"
-        status="basic"
-        onPress={onSignUpButtonPress}
-      >
+      <Button style={styles.signUpButton} mode="text" onPress={onSignUpButtonPress}>
         Don't have an account? Create
       </Button>
     </KeyboardAvoidingView>

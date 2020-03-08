@@ -1,25 +1,31 @@
 import React from 'react';
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '@/auth/login';
+import { NavigationContainer } from '@react-navigation/native';
+import BootSplash from 'react-native-bootsplash';
 
+import { createStackNavigator } from '@react-navigation/stack';
+
+import LoginScreen from '@/auth/login';
 import HomeScreen from '@/home';
 
-const Stack = createStackNavigator();
+import { useAuth } from '@/services/auth';
 
-const navigatorTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: 'transparent',
-  },
+export default (): React.ReactElement => {
+  const Stack = createStackNavigator();
+
+  const { fetching: fetchingUser, user } = useAuth();
+
+  React.useEffect(() => {
+    if (!fetchingUser) {
+      BootSplash.hide({ duration: 250 });
+    }
+  }, [fetchingUser]);
+
+  return fetchingUser ? null : (
+    <NavigationContainer>
+      <Stack.Navigator headerMode="none" initialRouteName={user ? 'Home' : 'Auth'}>
+        <Stack.Screen name="Auth" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 };
-
-export default (): React.ReactElement => (
-  <NavigationContainer theme={navigatorTheme}>
-    <Stack.Navigator headerMode="none">
-      <Stack.Screen name="Auth" component={LoginScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
-  </NavigationContainer>
-);

@@ -22,7 +22,6 @@ const HomeTabs = ({ navigation, state }): React.ReactElement => {
 const TopTab = createMaterialTopTabNavigator();
 
 export default (): React.ReactElement => {
-  //tabBar={props => <HomeTabs {...props} />}
   return (
     <TopTab.Navigator tabBar={props => <HomeTabs {...props} />}>
       <TopTab.Screen name="Products" component={Tenants} />

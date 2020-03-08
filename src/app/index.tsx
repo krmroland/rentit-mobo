@@ -5,20 +5,29 @@ import StatusBar from '@/components/statusbar';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { mapping } from '@eva-design/eva';
 import AppNavigation from '@/navigation/app';
+import { useNavigation } from '@react-navigation/native';
+import { Provider as AuthProvider } from '@/services/auth';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import { default as customMapping } from './mappings';
-import theme from './theme';
+import { appTheme, paper } from './themes';
 
-const App = (): React.ReactFragment => (
-  <React.Fragment>
-    <IconRegistry icons={EvaIconsPack} />
-    <ApplicationProvider mapping={mapping} theme={theme} customMapping={customMapping}>
-      <SafeAreaProvider>
-        <StatusBar />
-        <AppNavigation />
-      </SafeAreaProvider>
-    </ApplicationProvider>
-  </React.Fragment>
-);
+const App = (): React.ReactFragment => {
+  return (
+    <React.Fragment>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider mapping={mapping} theme={appTheme} customMapping={customMapping}>
+        <PaperProvider theme={paper}>
+          <SafeAreaProvider>
+            <StatusBar />
+            <AuthProvider>
+              <AppNavigation />
+            </AuthProvider>
+          </SafeAreaProvider>
+        </PaperProvider>
+      </ApplicationProvider>
+    </React.Fragment>
+  );
+};
 
 export default App;
