@@ -1,61 +1,24 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Text, View } from 'react-native';
+import { Appbar, useTheme, Button, Paragraph, Menu, Divider } from 'react-native-paper';
+import { tw } from 'react-native-tailwindcss';
 import Tabs from './tabs';
 
-import SQLite from 'react-native-sqlite-storage';
+import database from '@/database/connection';
 
-export default () => {
-  var db = SQLite.openDatabase(
-    'test.db',
-    '1.0',
-    'Test Database',
-    200000,
-    () => {
-      console.log('opened');
-    },
-    () => {
-      console.log('closed');
-    },
-  );
-  db.transaction(tx => {
-    tx.executeSql(
-      'SELECT * FROM Employees a, Departments b WHERE a.department = b.department_id',
-      [],
-      (tx, results) => {
-        console.log('Query completed');
+export default ({ navigation }) => {
+  const { fonts } = useTheme();
 
-        // Get rows with Web SQL Database spec compliance.
+  const products = database.collections.get('products');
 
-        var len = results.rows.length;
-        for (let i = 0; i < len; i++) {
-          let row = results.rows.item(i);
-          console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`);
-        }
-
-        // Alternatively, you can use the non-standard raw method.
-
-        /*
-        let rows = results.rows.raw(); // shallow copy of rows Array
-
-        rows.map(row => console.log(`Employee name: ${row.name}, Dept Name: ${row.deptName}`));
-      */
-      },
-    );
-  });
-  const goBack = () => console.log('Went back');
-
-  const handleSearch = () => console.log('Searching');
-
-  const handleMore = () => console.log('Shown more');
+  console.log({ products });
 
   return (
     <React.Fragment>
       <Appbar.Header>
-        <Appbar.BackAction onPress={goBack} />
-        <Appbar.Content title="RENTIT"></Appbar.Content>
-        <Appbar.Action icon="magnify" onPress={handleSearch} />
-        <Appbar.Action icon="dots-vertical" onPress={handleMore} />
+        <Appbar.Content title="RENTIT" titleStyle={[tw.text2xl, fonts.medium]}></Appbar.Content>
+        <Appbar.Action icon="magnify" onPress={() => console.log()} />
+        <Appbar.Action icon="settings" onPress={() => navigation.navigate('Settings')} />
       </Appbar.Header>
       <Tabs />
     </React.Fragment>

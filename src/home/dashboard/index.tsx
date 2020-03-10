@@ -1,32 +1,49 @@
-import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Tab, TabView, Icon } from '@ui-kitten/components';
-import Tenants from './tenants';
+import * as React from 'react';
+import { View, FlatList, StyleSheet } from 'react-native';
+import { tw } from 'react-native-tailwindcss';
+import { Avatar, Button, Card, Title, Paragraph, FAB, useTheme } from 'react-native-paper';
 
-const HomeTabs = ({ navigation, state }): React.ReactElement => {
-  const onTabSelect = (index: number): void => {
-    navigation.navigate(state.routeNames[index]);
-  };
+const MusicRoute = () => <Text>Music</Text>;
 
-  const renderTab = (route: string): React.ReactElement => (
-    <Tab key={route} title={route.toUpperCase()} />
-  );
+const AlbumsRoute = () => <Text>Albums</Text>;
 
+const RecentsRoute = () => <Text>Recents</Text>;
+
+export default ({ navigation }) => {
+  const theme = useTheme();
+  const styles = StyleSheet.create({
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 20,
+      backgroundColor: theme.colors.primary,
+    },
+  });
   return (
-    <TabView selectedIndex={state.index} onSelect={onTabSelect}>
-      {state.routeNames.map(renderTab)}
-    </TabView>
-  );
-};
+    <View>
+      <FlatList
+        style={[tw.pX2, tw.mT3]}
+        data={[1, 2, 3, 4, 5].map(id => ({ id: String(id) }))}
+        renderItem={() => (
+          <Card style={[tw.mB3]}>
+            <Card.Title
+              title="Product Name"
+              left={props => <Avatar.Icon {...props} icon="shield-home-outline" />}
+            />
+            <Card.Content>
+              <Title>Card title</Title>
+              <Paragraph>Card content</Paragraph>
+            </Card.Content>
 
-const TopTab = createMaterialTopTabNavigator();
-
-export default (): React.ReactElement => {
-  return (
-    <TopTab.Navigator tabBar={props => <HomeTabs {...props} />}>
-      <TopTab.Screen name="Products" component={Tenants} />
-      <TopTab.Screen name="Tenants" component={Tenants} />
-      <TopTab.Screen name="Payments" component={Tenants} />
-    </TopTab.Navigator>
+            <Card.Actions>
+              <Button>Cancel</Button>
+              <Button>Ok</Button>
+            </Card.Actions>
+          </Card>
+        )}
+      ></FlatList>
+      <FAB icon="plus" onPress={() => navigation.navigate('products/create')} style={styles.fab} />
+    </View>
   );
 };

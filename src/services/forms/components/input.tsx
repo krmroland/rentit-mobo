@@ -6,11 +6,17 @@ import { tw } from 'react-native-tailwindcss';
 import { TextInput } from 'react-native-paper';
 
 export default props => {
-  const { mode = 'outlined', error, ...inputProps } = props;
+  const { mode = 'outlined', error, textInputStyle, ...inputProps } = props;
 
   return (
     <React.Fragment>
-      <TextInput {...inputProps} mode={mode} error={!!error} autoCapitalize="none" />
+      <TextInput
+        {...inputProps}
+        mode={mode}
+        error={!!error}
+        autoCapitalize="none"
+        style={[tw.mB3, textInputStyle]}
+      />
       {error && <Text style={[tw.mT1, tw.pX1, tw.textRed700]}> {error}</Text>}
     </React.Fragment>
   );

@@ -87,9 +87,10 @@ export default ({ navigation }): React.ReactElement => {
 
         <Input
           label="Password"
-          style={styles.passwordInput}
+          style={[tw.pT4]}
           value={form.values.password}
           error={form.errors.password}
+          secureTextEntry
           onChangeText={form.handleChange('password')}
         />
         <View style={styles.forgotPasswordContainer}>
@@ -149,9 +150,7 @@ const themedStyles = StyleService.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  passwordInput: {
-    marginTop: 16,
-  },
+
   forgotPasswordButton: {
     paddingHorizontal: 0,
   },

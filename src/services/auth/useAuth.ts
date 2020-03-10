@@ -16,6 +16,8 @@ export const useAuth = (): AuthType => {
 
   const [token, updateToken] = React.useState<string | null>(null);
 
+  //SInfo.deleteItem('user', {});
+
   const fetchInitialUser = async () => {
     try {
       const data = await SInfo.getItem('user', {});

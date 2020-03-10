@@ -2,6 +2,8 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Dashboard from './dashboard';
+import Tenants from './tenants';
 
 const HomeScreen = () => <View></View>;
 const SettingsScreen = () => <View></View>;
@@ -20,7 +22,7 @@ export default () => {
           ...fonts.medium,
           color: colors.surface,
 
-          fontSize: 16,
+          fontSize: 14,
         },
         indicatorStyle: {
           borderColor: '#fff',
@@ -29,9 +31,9 @@ export default () => {
         },
       }}
     >
-      <Tab.Screen name="Projects" component={HomeScreen} />
+      <Tab.Screen name="Home" component={Dashboard} />
       <Tab.Screen name="Payments" component={HomeScreen} />
-      <Tab.Screen name="Tenants" component={SettingsScreen} />
+      <Tab.Screen name="Tenants" component={Tenants} />
     </Tab.Navigator>
   );
 };
