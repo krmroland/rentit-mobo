@@ -29,13 +29,7 @@ export const useAPIForm = fields => {
   React.useEffect(formatResponseErrors, [error]);
 
   const httpCall = (url, verb, options) => {
-    // validate the form first
-
-    if (!form.validate().hasErrors) {
-      return;
-    }
-
-    return send(url, { ...options, verb, data: form.values });
+    return form.submit(data => send(url, { ...options, verb, data }));
   };
 
   return {

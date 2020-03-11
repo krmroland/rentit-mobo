@@ -1,7 +1,22 @@
 import React from 'react';
-import { Button } from 'react-native-paper';
-export default props => {
-  const { disabled, loading } = props;
+import { ActivityIndicator } from 'react-native';
 
-  return <Button {...props} disabled={loading || disabled} loading={loading} />;
+import { Button, Icon } from '@ui-kitten/components';
+
+export default props => {
+  const { loading, iconName, ...buttonProps } = props;
+
+  const stateProps = {
+    disabled: !!(props.loading || props.disabled),
+  };
+
+  if (iconName) {
+    stateProps.icon = styles => <Icon name={iconName} {...styles} />;
+  }
+
+  if (loading) {
+    stateProps.icon = styles => <ActivityIndicator color={styles.tintColor} />;
+  }
+
+  return <Button {...buttonProps} {...stateProps} />;
 };

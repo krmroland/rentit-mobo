@@ -3,7 +3,7 @@ import { ScrollViewProps } from 'react-native';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-export const KeyboardAvoidingView = (props): React.ReactElement => {
+export default (props): React.ReactElement => {
   const defaultProps: ScrollViewProps = {
     style: { flex: 1 },
     contentContainerStyle: { flexGrow: 1 },

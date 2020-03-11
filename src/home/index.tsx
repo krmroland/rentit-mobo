@@ -16,7 +16,7 @@ export default ({ navigation }) => {
   return (
     <React.Fragment>
       <Appbar.Header>
-        <Appbar.Content title="RENTIT" titleStyle={[tw.text2xl, fonts.medium]}></Appbar.Content>
+        <Appbar.Content title="RENTIT" titleStyle={[fonts.medium]}></Appbar.Content>
         <Appbar.Action icon="magnify" onPress={() => console.log()} />
         <Appbar.Action icon="settings" onPress={() => navigation.navigate('Settings')} />
       </Appbar.Header>

@@ -9,7 +9,6 @@ import schema from './schema';
 
 const adapter = new SQLiteAdapter({
   schema,
-  migrations,
 });
 
 const database = new Database({

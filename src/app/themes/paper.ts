@@ -4,6 +4,6 @@ export default {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#A63726',
+    primary: '#4781E7',
   },
 };

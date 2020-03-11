@@ -4,10 +4,10 @@ import { useDeviceName, getUniqueId } from 'react-native-device-info';
 import get from 'lodash/get';
 import { tw } from 'react-native-tailwindcss';
 import { Layout, StyleService, Text, useStyleSheet, Icon, Card } from '@ui-kitten/components';
-import { KeyboardAvoidingView } from './extra/3rd-party';
+import { KeyboardAvoidingView } from '@/components';
 import { useAPIForm, Input, Button } from '@/services/forms';
 
-import { context } from '@/services/auth';
+import { context } from '../';
 
 export default ({ navigation }): React.ReactElement => {
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
@@ -82,21 +82,24 @@ export default ({ navigation }): React.ReactElement => {
           label="Email"
           value={form.values.email}
           error={form.errors.email}
+          iconName="email-outline"
           onChangeText={form.handleChange('email')}
         />
 
         <Input
-          label="Password"
-          style={[tw.pT4]}
+          style={styles.passwordInput}
           value={form.values.password}
           error={form.errors.password}
-          secureTextEntry
           onChangeText={form.handleChange('password')}
+          placeholder="Password"
+          iconName={passwordVisible ? 'eye' : 'eye-off'}
+          secureTextEntry={!passwordVisible}
+          onIconPress={onPasswordIconPress}
         />
         <View style={styles.forgotPasswordContainer}>
           <Button
             style={styles.forgotPasswordButton}
-            mode="text"
+            appearance="ghost"
             status="basic"
             onPress={onForgotPasswordButtonPress}
           >
@@ -106,15 +109,14 @@ export default ({ navigation }): React.ReactElement => {
       </Layout>
       <Button
         style={styles.signInButton}
-        mode="contained"
-        icon="login"
+        iconName="unlock-outline"
         loading={form.isBusy || deviceName.loading || fetchingUser}
         onPress={onPressLoginButton}
         disabled={form.hasErrors}
       >
         SIGN IN
       </Button>
-      <Button style={styles.signUpButton} mode="text" onPress={onSignUpButtonPress}>
+      <Button style={styles.signUpButton} appearance="ghost" onPress={onSignUpButtonPress}>
         Don't have an account? Create
       </Button>
     </KeyboardAvoidingView>
@@ -150,7 +152,9 @@ const themedStyles = StyleService.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-
+  passwordInput: {
+    marginTop: 16,
+  },
   forgotPasswordButton: {
     paddingHorizontal: 0,
   },

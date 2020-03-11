@@ -1,23 +1,11 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
-import { Text } from 'react-native';
-import { tw } from 'react-native-tailwindcss';
-
-import { TextInput } from 'react-native-paper';
+import { Input } from '@ui-kitten/components';
+import useInputProps from './useInputProps';
 
 export default props => {
-  const { mode = 'outlined', error, textInputStyle, ...inputProps } = props;
+  const inputProps = useInputProps(props);
 
-  return (
-    <React.Fragment>
-      <TextInput
-        {...inputProps}
-        mode={mode}
-        error={!!error}
-        autoCapitalize="none"
-        style={[tw.mB3, textInputStyle]}
-      />
-      {error && <Text style={[tw.mT1, tw.pX1, tw.textRed700]}> {error}</Text>}
-    </React.Fragment>
-  );
+  return <Input autoCapitalize="none" {...inputProps} />;
 };

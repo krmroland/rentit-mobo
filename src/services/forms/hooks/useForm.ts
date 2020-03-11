@@ -7,7 +7,7 @@ import { parse } from '../field';
 
 import { RawFieldOptions } from '../types';
 
-export const useForm = (fields: Array<RawFieldOptions>) => {
+export const useForm = (fields: Array<RawFieldOptions> = []) => {
   // first we need to parse the fields
 
   const formFields = Object.create(null);
@@ -77,11 +77,21 @@ export const useForm = (fields: Array<RawFieldOptions>) => {
     return { hasErrors: !hasFilledErrors(freshErrors), errors: freshErrors };
   };
 
+  const submit = (callback: (data?: object) => Promise) => {
+    // validate the form first
+    if (!validate().hasErrors) {
+      return;
+    }
+
+    return callback(values);
+  };
+
   return {
     values,
     errors,
     updateErrors,
     validate,
+    submit,
     hasErrors: hasFilledErrors(errors),
     handleChange,
   };

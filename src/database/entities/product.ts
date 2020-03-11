@@ -1,7 +1,7 @@
 import { Model } from '@nozbe/watermelondb';
-import { field, json, children } from '@nozbe/watermelondb/decorators';
+import { field, json, children, readonly, date } from '@nozbe/watermelondb/decorators';
 
-class Product extends Model {
+export default class Product extends Model {
   static table = 'products';
 
   static associations = {
@@ -12,9 +12,9 @@ class Product extends Model {
 
   @field('name') name;
   @field('account_id') accountId;
+  @field('user_id') userId;
   @field('currency') currency;
-  @json('details') details;
   @field('type') type;
+  @readonly @date('created_at') createdAt;
+  @readonly @date('updated_at') updatedAt;
 }
-
-export default Product;

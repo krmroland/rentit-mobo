@@ -1,3 +1,3 @@
-import { default as Product } from './product';
+import Product from './product';
 
 export default [Product];
