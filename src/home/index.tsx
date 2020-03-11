@@ -4,14 +4,8 @@ import { Appbar, useTheme, Button, Paragraph, Menu, Divider } from 'react-native
 import { tw } from 'react-native-tailwindcss';
 import Tabs from './tabs';
 
-import database from '@/database/connection';
-
 export default ({ navigation }) => {
   const { fonts } = useTheme();
-
-  const products = database.collections.get('products');
-
-  console.log({ products });
 
   return (
     <React.Fragment>

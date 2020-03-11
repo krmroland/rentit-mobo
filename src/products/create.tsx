@@ -8,6 +8,8 @@ import { Card, Icon } from '@ui-kitten/components';
 import { Input, Button, Select, useDatabaseForm } from '@/services/forms';
 import { AuthContext } from '@/auth';
 
+import Product from '@/database/entities/product';
+
 export default ({ navigation }) => {
   const [submitting, updateSubmitting] = React.useState<boolean>(false);
 
@@ -22,14 +24,21 @@ export default ({ navigation }) => {
   ]);
 
   const onSubmit = () => {
-    form.create({
-      onSuccess(product) {
-        navigation.goBack();
+    form.persist(
+      async data => {
+        const post = new Product();
+        console.log(post);
       },
-      onError(e) {
-        console.log(e);
+      {
+        onSuccess(product) {
+          //console.log({ product });
+          //navigation.goBack();
+        },
+        onError(e) {
+          console.log(e);
+        },
       },
-    });
+    );
   };
 
   return (

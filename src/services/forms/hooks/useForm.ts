@@ -1,6 +1,7 @@
 import React from 'react';
 import get from 'lodash/get';
 import has from 'lodash/has';
+import pick from 'lodash/pick';
 import { validate as validateField } from '../validation';
 
 import { parse } from '../field';
@@ -77,10 +78,10 @@ export const useForm = (fields: Array<RawFieldOptions> = []) => {
     return { hasErrors: !hasFilledErrors(freshErrors), errors: freshErrors };
   };
 
-  const submit = (callback: (data?: object) => Promise) => {
+  const withValidatedData = (callback: (data?: object) => any) => {
     // validate the form first
     if (!validate().hasErrors) {
-      return;
+      return [];
     }
 
     return callback(values);
@@ -91,7 +92,7 @@ export const useForm = (fields: Array<RawFieldOptions> = []) => {
     errors,
     updateErrors,
     validate,
-    submit,
+    withValidatedData,
     hasErrors: hasFilledErrors(errors),
     handleChange,
   };

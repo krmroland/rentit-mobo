@@ -7,7 +7,7 @@ import { Layout, StyleService, Text, useStyleSheet, Icon, Card } from '@ui-kitte
 import { KeyboardAvoidingView } from '@/components';
 import { useAPIForm, Input, Button } from '@/services/forms';
 
-import { context } from '../';
+import context from '../context';
 
 export default ({ navigation }): React.ReactElement => {
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);

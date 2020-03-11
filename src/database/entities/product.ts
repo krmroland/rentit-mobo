@@ -1,20 +1,21 @@
-import { Model } from '@nozbe/watermelondb';
-import { field, json, children, readonly, date } from '@nozbe/watermelondb/decorators';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm/browser';
 
-export default class Product extends Model {
-  static table = 'products';
+import BaseEntity from './base';
 
-  static associations = {
-    variants: { type: 'has_many', foreignKey: 'product_id' },
-  };
+@Entity('product')
+export default class Product extends BaseEntity {
+  @Column('varchar')
+  name: string;
 
-  @children('product_variants') variants;
+  @Column('varchar')
+  type: string;
 
-  @field('name') name;
-  @field('account_id') accountId;
-  @field('user_id') userId;
-  @field('currency') currency;
-  @field('type') type;
-  @readonly @date('created_at') createdAt;
-  @readonly @date('updated_at') updatedAt;
+  @Column('varchar')
+  currency: string;
+
+  @Column('bigint')
+  accountId: number;
+
+  @Column('bigint')
+  userId: number;
 }

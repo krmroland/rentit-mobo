@@ -1,20 +1,23 @@
-import { Database } from '@nozbe/watermelondb';
-import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
+import { createConnection, getConnectionManager } from 'typeorm/browser';
 
-import migrations from './migrations';
+import entities from './entities';
 
-import Entities from './entities';
+const manager = getConnectionManager();
 
-import schema from './schema';
+const resolveConnection = () => {
+  if (manager.has('default')) {
+    return manager.get('default');
+  }
 
-const adapter = new SQLiteAdapter({
-  schema,
-});
+  return createConnection({
+    type: 'react-native',
+    database: 'rentit.db',
+    location: 'default',
+    logging: ['error', 'query', 'schema'],
+    synchronize: true,
+    cache: true,
+    entities,
+  });
+};
 
-const database = new Database({
-  adapter,
-  modelClasses: Entities,
-  actionsEnabled: true,
-});
-
-export default database;
+export default resolveConnection();
