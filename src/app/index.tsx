@@ -23,6 +23,10 @@ const App = (): React.ReactFragment => {
     }
   }, [fetchingUser]);
 
+  React.useEffect(() => {
+    // open the database
+  }, []);
+
   return (
     <React.Fragment>
       <IconRegistry icons={EvaIconsPack} />
