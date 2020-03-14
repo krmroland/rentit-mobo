@@ -10,8 +10,6 @@ import { Provider as PaperProvider, Snackbar } from 'react-native-paper';
 import AppNavigation from '@/navigation/app';
 import { useAuth, AuthProvider } from '@/auth';
 
-import database from '@/services/database/ts';
-
 import { default as customMapping } from './mappings';
 import { appTheme, paper } from './themes';
 
@@ -23,10 +21,6 @@ const App = (): React.ReactFragment => {
       BootSplash.hide({ duration: 250 });
     }
   }, [fetchingUser]);
-
-  React.useEffect(() => {
-    database.migrations().migrate();
-  }, []);
 
   return (
     <React.Fragment>

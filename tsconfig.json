@@ -16,9 +16,7 @@
       "@": "src/*",
       "*": ["src/*"]
     },
-    "typeRoots": ["./node_modules/@types"],
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "typeRoots": ["./node_modules/@types"]
   },
   "exclude": ["./node_modules", "./babel.config.js", "./metro.config.js"],
   "emitDecoratorMetadata": true,
