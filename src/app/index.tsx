@@ -9,7 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Provider as PaperProvider, Snackbar } from 'react-native-paper';
 import AppNavigation from '@/navigation/app';
 import { useAuth, AuthProvider } from '@/auth';
-import '@/database/connection';
+
+import database from '@/services/database/ts';
 
 import { default as customMapping } from './mappings';
 import { appTheme, paper } from './themes';
@@ -24,7 +25,7 @@ const App = (): React.ReactFragment => {
   }, [fetchingUser]);
 
   React.useEffect(() => {
-    // open the database
+    database.migrations().migrate();
   }, []);
 
   return (

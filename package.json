@@ -22,7 +22,9 @@
     "add": "^2.0.6",
     "assert": "^2.0.0",
     "axios": "^0.19.2",
+    "bluebird": "^3.7.2",
     "collect.js": "^4.20.3",
+    "events": "^3.1.0",
     "lodash": "^4.17.15",
     "react": "16.9.0",
     "react-native": "0.61.5",
@@ -40,6 +42,8 @@
     "react-native-tab-view": "^2.13.0",
     "react-native-tailwindcss": "^1.1.9",
     "react-native-vector-icons": "^6.6.0",
+    "stream": "^0.0.2",
+    "tarn": "^2.0.0",
     "typeorm": "^0.2.24",
     "url": "^0.11.0"
   },
