@@ -3,6 +3,7 @@ import {
   StatusBar as RNStatusBar,
   StatusBarProps as RNStatusBarProps,
   ViewProps,
+  Platform,
 } from 'react-native';
 import { styled, StyledComponentProps } from '@ui-kitten/components';
 
@@ -18,8 +19,8 @@ class StatusBarComponent extends React.Component<StatusBarProps> {
       <RNStatusBar
         {...themedStyle}
         {...statusBarProps}
-        barStyle="light-content"
-        translucent={true}
+        translucent={false}
+        barStyle={Platform.OS === 'android' ? 'dark-content' : 'light-content'}
       />
     );
   }

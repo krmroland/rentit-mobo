@@ -12,15 +12,28 @@ import { useAuth, AuthProvider } from '@/auth';
 
 import { default as customMapping } from './mappings';
 import { appTheme, paper } from './themes';
+import DB from '@/services/database/database';
 
 const App = (): React.ReactFragment => {
   const { fetching: fetchingUser } = useAuth();
+
+  const db = new DB(2, 2);
+
+  const collection = db.collection('product');
 
   React.useEffect(() => {
     if (!fetchingUser) {
       BootSplash.hide({ duration: 250 });
     }
   }, [fetchingUser]);
+
+  React.useEffect(() => {
+    db.createUserTableIfDoesntExits();
+    // collection.insert({ name: 'Ayebare Justus' }).catch(error => {
+    //   console.log({ error });
+    // });
+    // db.whereData().then(data => console.log({ data }));
+  }, []);
 
   return (
     <React.Fragment>
