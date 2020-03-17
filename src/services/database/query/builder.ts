@@ -9,10 +9,20 @@ class Builder {
    * @type {Array}
    */
   public wheres = [];
-
-  public aggregateValue;
-
+  /**
+   * The agregate values
+   * @type {Object|null}
+   */
+  public aggregateValue: object | null;
+  /**
+   * The sequel groups
+   * @type {[type]}
+   */
   public groups: Array<any> | string;
+  /**
+   * The orders on the query
+   * @type {Array|string}
+   */
   public orders: string | Array<any>;
   /**
    * The selected cokumns

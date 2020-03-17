@@ -87,7 +87,7 @@ class Database {
    */
   insert(collection, data) {
     return this.acquireConnection().then(connection => {
-      const { sql, bindings } = perepareInsert(this.tableName, this.accountId, collection, data);
+      const { sql, bindings } = perepareInsert(this.accountId, collection, data);
 
       if (__DEV__) {
         console.log({ sql, bindings });

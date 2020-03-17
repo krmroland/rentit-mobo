@@ -29,9 +29,9 @@ const App = (): React.ReactFragment => {
 
   React.useEffect(() => {
     db.createUserTableIfDoesntExits();
-    // collection.insert({ name: 'Ayebare Justus' }).catch(error => {
-    //   console.log({ error });
-    // });
+    collection.insert({ name: 'Ayebare Justus' }).catch(error => {
+      console.log({ error });
+    });
     // db.whereData().then(data => console.log({ data }));
   }, []);
 

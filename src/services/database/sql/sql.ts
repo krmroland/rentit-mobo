@@ -1,13 +1,13 @@
 import isPlainObject from 'lodash/isPlainObject';
 import { v4 as uuidv4 } from 'uuid';
 
-export const perepareInsert = (tableName: string, accountId: number, collection: string, data) => {
+export const perepareInsert = (accountId: number, collection: string, data) => {
   if (!isPlainObject(data)) {
     console.warn('given data', data);
     throw new Error('Data must be a plain object');
   }
 
-  const sql = `insert into ${tableName} (id,accountId,collection,data) values(?,?,?,json_array(?))`;
+  const sql = `insert into documents (id,accountId,collection,data) values(?,?,?,json_array(?))`;
 
   const id = uuidv4();
 
