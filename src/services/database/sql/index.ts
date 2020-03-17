@@ -1,2 +1,2 @@
 export * from './sql';
-export * from './createUserTable';
+export * from './createTables';

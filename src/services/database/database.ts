@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 
 import Collection from './collection';
 
-import { createUserTable, perepareInsert } from './sql';
+import { createDatabaseTables, perepareInsert } from './sql';
 
 class Database {
   /**
@@ -55,7 +55,7 @@ class Database {
 
       Sqlite.enablePromise(true);
       // we fetch one
-      Sqlite.openDatabase({ name: 'rentit.db' })
+      Sqlite.openDatabase({ name: `rentit${this.userId}.db` })
         .then(connection => {
           this.connection = connection;
           resolve(connection);
@@ -73,7 +73,7 @@ class Database {
   }
   createUserTableIfDoesntExits() {
     return this.acquireConnection().then(connection => {
-      return connection.sqlBatch(createUserTable(this.userId));
+      return connection.sqlBatch(createDatabaseTables());
     });
   }
 
