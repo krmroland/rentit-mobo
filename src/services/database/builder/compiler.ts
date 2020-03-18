@@ -119,7 +119,7 @@ class Compiler {
 
     let select: string;
 
-    if (query.distinct) {
+    if (query.distinctValue) {
       select = 'select distinct ';
     } else {
       select = 'select ';

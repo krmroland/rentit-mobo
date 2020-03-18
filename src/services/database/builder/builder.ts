@@ -176,6 +176,7 @@ class Builder {
   protected addWhere(column, operator, value, boolean = 'and', type = 'basic') {
     this.wheres.push({ type, column, operator, boolean });
     this.bindings.where.push(value);
+
     return this;
   }
   /**
@@ -289,7 +290,8 @@ class Builder {
    * @return array
    */
   getBindings() {
-    return flatten(this.bindings);
+    console.log({ bindings: this.bindings, flat: flatten(Object.values(this.bindings)) });
+    return flatten(Object.values(this.bindings));
   }
 
   protected isQueryable(value) {
