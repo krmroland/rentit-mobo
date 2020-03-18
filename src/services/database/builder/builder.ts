@@ -269,9 +269,10 @@ class Builder {
     this.select(columns);
 
     return this.database.executeSql(this.toSql(), this.getBindings()).then(results => {
-      return new DatabaseCollection(results);
+      return new DatabaseCollection(results, this);
     });
   }
+
   /**
    * Get the SQL representation of the query.
    */
@@ -290,7 +291,6 @@ class Builder {
    * @return array
    */
   getBindings() {
-    console.log({ bindings: this.bindings, flat: flatten(Object.values(this.bindings)) });
     return flatten(Object.values(this.bindings));
   }
 
