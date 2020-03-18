@@ -18,10 +18,11 @@ class Document {
   update() {}
 
   field(key, defaultValue) {
-    return get(this.item, defaultValue);
+    return get(this.item, key, defaultValue);
   }
   dataField(key, defaultValue) {
-    return this.field(['data', key], defaultValue);
+    console.log({ data: this.data });
+    return get(this.data, key, defaultValue);
   }
 }
 

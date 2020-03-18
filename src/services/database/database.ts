@@ -124,7 +124,8 @@ class Database {
     const { sql, bindings } = perepareInsert(1, collection, data);
 
     return this.executeSql(sql, bindings).then(results => {
-      return Promise.resolve(results[0]);
+      console.log({ results });
+      return Promise.resolve(results);
     });
   }
 
@@ -133,7 +134,7 @@ class Database {
       if (__DEV__) {
         console.log({ sql, bindings });
       }
-      return connection.executeSql(sql, bindings);
+      return connection.executeSql(sql, bindings).then(results => Promise.resolve(results[0]));
     });
   }
 

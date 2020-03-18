@@ -24,7 +24,7 @@ export default class DatabaseCollection {
    * Hydrates all the items
    */
   items() {
-    return collect(this.results.rows.raw().mapInto(Document));
+    return collect(this.results.rows.raw()).mapInto(Document);
   }
   /**
    * Returns an instance if the generator class

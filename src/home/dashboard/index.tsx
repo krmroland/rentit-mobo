@@ -10,14 +10,12 @@ const Products = ({ navigation }) => {
 
   const [products, updateProducts] = React.useState([]);
 
-  console.log({ database });
-
   React.useEffect(() => {
     database
       .collection('products')
       .get()
       .then(results => {
-        console.log({ results });
+        updateProducts(results.items().all());
       });
   }, []);
 
@@ -36,20 +34,21 @@ const Products = ({ navigation }) => {
         style={[tw.pX2, tw.mT3]}
         data={products}
         renderItem={({ item }) => {
+          console.log(item);
           return (
             <Card style={[tw.mB3]}>
               <Card.Title
-                title={item.name}
+                title={item.dataField('name')}
                 left={props => (
                   <Avatar.Icon
                     {...props}
-                    icon={item.type === 'House' ? 'shield-home-outline' : 'car'}
+                    icon={item.dataField('type') === 'House' ? 'shield-home-outline' : 'car'}
                     size={50}
                   />
                 )}
               />
               <Card.Content>
-                <Title>{item.name}</Title>
+                <Title>{item.dataField('name')}</Title>
                 <Paragraph>Card content</Paragraph>
               </Card.Content>
 

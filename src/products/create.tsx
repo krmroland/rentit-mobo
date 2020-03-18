@@ -4,6 +4,7 @@ import { tw } from 'react-native-tailwindcss';
 import { Appbar, Avatar, Title, Snackbar } from 'react-native-paper';
 import { KeyboardAvoidingView } from '@/components';
 import { Card, Icon } from '@ui-kitten/components';
+import database from '@/services/database';
 
 import { Input, Button, Select, useDatabaseForm } from '@/services/forms';
 
@@ -12,26 +13,28 @@ import { AuthContext } from '@/auth';
 export default ({ navigation }) => {
   const [submitting, updateSubmitting] = React.useState<boolean>(false);
 
-  const { currentAccountId, userId } = React.useContext(AuthContext);
-
   const form = useDatabaseForm('products', [
-    { name: 'userId', rules: 'required', defaultValue: userId },
-    { name: 'accountId', rules: 'required', defaultValue: currentAccountId },
+    // { name: 'accountId', rules: 'required', defaultValue: currentAccountId },
     { name: 'name', rules: 'required|max:25' },
     { name: 'currency', rules: 'required', defaultValue: 'UGX' },
     { name: 'type', rules: 'required', defaultValue: 'House' },
   ]);
 
   const onSubmit = () => {
-    form.persist(() => {}, {
-      onSuccess(product) {
-        //console.log({ product });
-        //navigation.goBack();
+    form.persist(
+      data => {
+        return database.insertCollection('products', data);
       },
-      onError(e) {
-        console.log(e);
+      {
+        onSuccess(product) {
+          console.log({ product });
+          //navigation.goBack();
+        },
+        onError(e) {
+          console.log(e);
+        },
       },
-    });
+    );
   };
 
   return (
