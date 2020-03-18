@@ -1,11 +1,20 @@
 import Sqlite from 'react-native-sqlite-storage';
-import isNil from 'lodash/isNil';
+import { isNil, get } from 'lodash';
 
-import Collection from './collection';
+import { Builder, Compiler } from './builder';
 
-import { createDatabaseTables, perepareInsert } from './sql';
+import { createTablesIfTheyDontExist, perepareInsert } from './utils';
+
+// ensure we are never connecting to a null database
+
+const normalizeDatabaseName = given => (given ? given : 'renit.db');
 
 class Database {
+  /**
+   * Determines if we have loaded the database already
+   * @type {false}
+   */
+  public loaded: boolean;
   /**
    * The current database connection
    * @type {mixed}
@@ -15,34 +24,62 @@ class Database {
    * The current user id
    * @type {number}
    */
-  protected userId: number;
+  protected name: string;
   /**
    * The account id
    * @type {number}
    */
-  protected accountId: number;
+  protected accountId: number = 1;
+  /**
+   * The allowed connection names
+   * @type {Array}
+   */
+  public allowedCollections = ['products', 'tenants', 'variants'];
+
   /**
    * Creates an instance of this class
-   * @param {number} userId
-   * @param {number} accountId
    */
-  constructor(userId: number, accountId: number) {
-    if (isNil(userId)) {
-      throw new Error('accountId is required while creating database');
-    }
-
-    if (isNil(accountId)) {
-      throw new Error('accountId is required while creating database');
-    }
-
-    if (!Number.isInteger(+accountId)) {
-      throw new Error('account Id must be number');
-    }
-
-    this.userId = userId;
-
-    this.accountId = +accountId;
+  constructor(name?: string) {
+    this.name = normalizeDatabaseName(name);
+    this.loadIfNotLoaded();
   }
+
+  setName(name: string) {
+    let newName = normalizeDatabaseName(name);
+
+    if (newName !== this.name) {
+      this.name = newName;
+      this.loaded = false;
+      this.connection = null;
+    }
+
+    return this;
+  }
+
+  setAccount(account) {
+    this.accountId = get(account, 'id');
+    return this;
+  }
+
+  loadIfNotLoaded() {
+    if (this.loaded) {
+      return Promise.resolve();
+    }
+
+    return this.createTablesIfTheyDontExits().then(() => {
+      this.loaded = true;
+      return Promise.resolve();
+    });
+  }
+
+  loadUserDatabase(user, account) {
+    if (user) {
+      return this.setAccount(account)
+        .setName(`renit_${user.id}.db`)
+        .loadIfNotLoaded();
+    }
+  }
+
   /**
    * Acquires.a database connection
    */
@@ -55,7 +92,7 @@ class Database {
 
       Sqlite.enablePromise(true);
       // we fetch one
-      Sqlite.openDatabase({ name: `rentit${this.userId}.db` })
+      Sqlite.openDatabase({ name: this.name })
         .then(connection => {
           this.connection = connection;
           resolve(connection);
@@ -71,46 +108,54 @@ class Database {
       });
     });
   }
-  createUserTableIfDoesntExits() {
+  createTablesIfTheyDontExits() {
     return this.acquireConnection().then(connection => {
-      return connection.sqlBatch(createDatabaseTables());
+      return connection.sqlBatch(createTablesIfTheyDontExist());
     });
   }
 
-  collection(name) {
-    return new Collection(name, this);
-  }
   /**
    * Inserts an item into the database
    * @param {string} collection
    * @param {object} data
    */
-  insert(collection, data) {
-    return this.acquireConnection().then(connection => {
-      const { sql, bindings } = perepareInsert(this.accountId, collection, data);
+  insertCollection(collection, data) {
+    console.log({ accountId: this.accountId });
+    const { sql, bindings } = perepareInsert(1, collection, data);
 
+    return this.executeSql(sql, bindings).then(results => {
+      return Promise.resolve(results[0]);
+    });
+  }
+
+  executeSql(sql, bindings = []) {
+    return this.acquireConnection().then(connection => {
       if (__DEV__) {
         console.log({ sql, bindings });
       }
-
-      return connection.executeSql(sql, bindings).then(results => {
-        console.log({ results });
-        return Promise.resolve(results);
-      });
+      return connection.executeSql(sql, bindings);
     });
   }
 
-  whereData() {
-    return this.acquireConnection().then(connection => {
-      return connection.executeSql(`select json_extract(data, "$.name") as name from user_2_table`);
-    });
+  collection(name) {
+    return this.query.from('documents').where('collection', name);
   }
-  /**
-   * Gets the table name
-   */
-  protected get tableName() {
-    return `user_${this.userId}_table`;
+
+  get query() {
+    return new Builder(this, new Compiler());
+  }
+
+  ensureUserIdAndAccountNumberAreSet() {
+    if (isNil(this.accountId)) {
+      throw new Error('accountId is required for persisting records');
+    }
+
+    if (!Number.isInteger(+this.accountId)) {
+      throw new Error('account Id must be number');
+    }
+
+    return this;
   }
 }
 
-export default Database;
+export default new Database();

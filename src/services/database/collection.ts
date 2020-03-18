@@ -1,33 +1,37 @@
-export default class Collection {
-  /**
-   * The collection name
-   * @type {string}
-   */
-  protected name: string;
-  /**
-   * The current databsae context
-   * @type {Dabatabase}
-   */
-  protected database;
-  /**
-   * The relations array
-   * @type {Array<any>}
-   */
-  protected relations: Array<any> = [];
-  /**
-   * Creates an instance of the class
-   * @param {[type]} database
-   * @param {[type]} name
-   */
-  constructor(name, database) {
-    this.name = name;
-    this.database = database;
-  }
+import collect from 'collect.js';
+import Document from './document';
 
-  insert(data) {
-    // first we will append data to the item
-    return this.database.insert(this.name, data);
+export default class DatabaseCollection {
+  /**
+   * The database results
+   * @type {Object}
+   */
+  protected results;
+  /**
+   * Creates an instance of this class
+   * @param {Object} results
+   */
+  constructor(results) {
+    this.results = results;
   }
-  paginate(currentPage) {}
-  get() {}
+  /**
+   * Gets the total number of items
+   */
+  get totalItems() {
+    return this.results.rows.length;
+  }
+  /**
+   * Hydrates all the items
+   */
+  items() {
+    return collect(this.results.rows.raw().mapInto(Document));
+  }
+  /**
+   * Returns an instance if the generator class
+   **/
+  *cursor() {
+    for (let i = 0; i < this.totalItems; i++) {
+      yield new Document(this.results.rows.item(i));
+    }
+  }
 }

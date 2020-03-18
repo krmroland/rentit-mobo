@@ -1,9 +1,15 @@
-import collect from 'collect.js';
-import { castArray, isPlainObject, isObject, isFunction, isEmpty, clone } from 'lodash';
+import { castArray, isPlainObject, isObject, isFunction, isEmpty, clone, flatten } from 'lodash';
 
 import Compiler from './compiler';
 
+import DatabaseCollection from '../collection';
+
 class Builder {
+  /**
+   * The database connection
+   * @type {[type]}
+   */
+  public database;
   /**
    * The where clauses
    * @type {Array}
@@ -70,7 +76,8 @@ class Builder {
   /**
    * Creates an instance of the class
    */
-  constructor(compiler: Compiler) {
+  constructor(database = null, compiler: Compiler = null) {
+    this.database = database;
     this.compiler = compiler;
   }
   /**
@@ -198,12 +205,17 @@ class Builder {
   count(columns = '*') {
     return +this.aggregate('count', castArray(columns));
   }
-
+  /**
+   * Runs an aggregate query
+   * @param {[type]} name    [description]
+   * @param {[type]} columns [description]
+   */
   aggregate(name, columns) {
     let results = this.cloneWithout(['columns'])
       .cloneWithoutBindings(['select'])
       .setAggregate(name, columns)
-      .get(columns);
+      .get(columns)
+      .base();
 
     if (!results.isEmpty()) {
       return results[0]['aggregate'];
@@ -241,14 +253,23 @@ class Builder {
     if (isEmpty(this.groups)) {
       this.orders = null;
 
-      this.bindings.order = [];
+      this.bindings.orderBy = [];
     }
 
     return this;
   }
 
-  get() {
-    return collect();
+  get(columns = ['*']) {
+    if (!this.database) {
+      console.warn('Missing database from the query builder');
+      return;
+    }
+
+    this.select(columns);
+
+    return this.database.executeSql(this.toSql(), this.getBindings()).then(results => {
+      return new DatabaseCollection(results);
+    });
   }
   /**
    * Get the SQL representation of the query.
@@ -257,11 +278,20 @@ class Builder {
     return this.compiler.compileSelect(this);
   }
 
-  /**
-     * Determine if the value is a query builder instance or a Closure.
-     *
+  from(table) {
+    this.fromTable = table;
+    return this;
+  }
 
-     */
+  /**
+   * Get the current query value bindings in a flattened array.
+   *
+   * @return array
+   */
+  getBindings() {
+    return flatten(this.bindings);
+  }
+
   protected isQueryable(value) {
     return value instanceof Builder || isFunction(value);
   }

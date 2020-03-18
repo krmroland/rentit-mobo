@@ -8,31 +8,32 @@ import { mapping } from '@eva-design/eva';
 import { useNavigation } from '@react-navigation/native';
 import { Provider as PaperProvider, Snackbar } from 'react-native-paper';
 import AppNavigation from '@/navigation/app';
-import { useAuth, AuthProvider } from '@/auth';
+import { useAuth, AuthProvider, loadExistingUserFromStorage } from '@/auth';
+import { database } from '@/services/database';
 
 import { default as customMapping } from './mappings';
 import { appTheme, paper } from './themes';
-import DB from '@/services/database/database';
+import bootstrap from './bootsrap';
 
 const App = (): React.ReactFragment => {
-  const { fetching: fetchingUser } = useAuth();
+  const [bootstraping, updateBootstraping] = React.useState<boolean>(true);
 
-  const db = new DB(2, 2);
-
-  const collection = db.collection('product');
+  const { update: updateAuth, user } = useAuth();
 
   React.useEffect(() => {
-    if (!fetchingUser) {
-      BootSplash.hide({ duration: 250 });
-    }
-  }, [fetchingUser]);
-
-  React.useEffect(() => {
-    db.createUserTableIfDoesntExits();
-    collection.insert({ name: 'Ayebare Justus' }).catch(error => {
-      console.log({ error });
-    });
-    // db.whereData().then(data => console.log({ data }));
+    loadExistingUserFromStorage()
+      .then(({ user, token }) => updateAuth(user, token).then(() => Promise.resolve(user)))
+      .then(user => database.loadUserDatabase(user))
+      .then(() => {
+        updateBootstraping(false);
+        BootSplash.hide({ duration: 250 });
+      })
+      .catch(error => {
+        updateBootstraping(false);
+        console.log({ error });
+        // show this error maybe?
+        BootSplash.hide({ duration: 250 });
+      });
   }, []);
 
   return (
@@ -43,7 +44,10 @@ const App = (): React.ReactFragment => {
           <SafeAreaProvider>
             <StatusBar />
             <AuthProvider>
-              <AppNavigation />
+              <AppNavigation
+                initialRouteName={user ? 'Home' : 'Auth'}
+                bootstraping={bootstraping}
+              />
             </AuthProvider>
           </SafeAreaProvider>
         </PaperProvider>

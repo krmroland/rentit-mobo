@@ -28,6 +28,7 @@ const createVirtualTable = () => {
 };
 
 /** search triggers **/
+
 const createSearchRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS document_search_auto_insert AFTER INSERT ON documents 
     BEGIN
@@ -38,7 +39,7 @@ const createSearchRecordTrigger = () => {
 const updateSearchRecordTrigger = () => {
   return ` CREATE TRIGGER IF NOT EXISTS documents_search_auto_update AFTER UPDATE ON documents 
     BEGIN
-      INSERT INTO documents_index(documents_index, id) VALUES('delete', old.id);
+     UPDATE documents_index set data=new.data, collection= new.collection where id= old.id;
     END;
 `;
 };
@@ -46,24 +47,31 @@ const updateSearchRecordTrigger = () => {
 const deleteSearchRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS documents_search_auto_delete AFTER DELETE ON documents 
    BEGIN
-    INSERT INTO documents_index(documents_index, id) VALUES('delete', old.id);
+    DELETE FROM documents_index where id= old.id;
    END;`;
 };
 
 // event table triggers
+
+const eventPayloadSql = item => {
+  return `json_set(json(${item}.data),'$.createdAt',${item}.createdAt, '$.updatedAt',${item}.updatedAt)`;
+};
+
 const createEventRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS document_event_auto_insert AFTER INSERT ON documents 
     WHEN new.syncedAt is null
     BEGIN
-      INSERT INTO document_events(document_id,type,collection,payload) VALUES (new.id,'created',new.collection,new.data);
+      INSERT INTO document_events(document_id,type,collection,payload) 
+           VALUES (new.id,'created',new.collection,${eventPayloadSql('new')});
     END;`;
 };
 
 const updateEventRecordTrigger = () => {
   return ` CREATE TRIGGER IF NOT EXISTS documents_event_auto_update AFTER UPDATE ON documents 
-    WHEN new.syncedAt is null or  strftime('%s', new.syncedAt) !=  strftime('%s', old.syncedAt)
+    WHEN new.syncedAt is null
     BEGIN
-       INSERT INTO document_events(document_id,type,collection,payload) VALUES (new.id,'updated',new.collection,new.data);
+       INSERT INTO document_events(document_id,type,collection,payload) 
+           VALUES (new.id,'updated',new.collection,${eventPayloadSql('new')});
     END;
 `;
 };
@@ -72,11 +80,12 @@ const deleteEventRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS documents_event_auto_delete AFTER DELETE ON documents 
    WHEN json_extract(old.data,'$."is_server_deleted"') is null
    BEGIN
-     INSERT INTO document_events(document_id,type,collection) VALUES (old.id,'deleted',old.collection);
+      INSERT INTO document_events(document_id,type,collection,payload) 
+           VALUES (new.id,'updated',new.collection,${eventPayloadSql('old')});
    END;`;
 };
 
-export const createDatabaseTables = () => {
+export const createTablesIfTheyDontExist = () => {
   return [
     talbleSql(),
     eventsTableSql(),

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { tw } from 'react-native-tailwindcss';
+import database from '@/services/database';
 
 import { Avatar, Button, Card, Title, Paragraph, FAB, useTheme } from 'react-native-paper';
 
@@ -8,6 +9,17 @@ const Products = ({ navigation }) => {
   const theme = useTheme();
 
   const [products, updateProducts] = React.useState([]);
+
+  console.log({ database });
+
+  React.useEffect(() => {
+    database
+      .collection('products')
+      .get()
+      .then(results => {
+        console.log({ results });
+      });
+  }, []);
 
   const styles = StyleSheet.create({
     fab: {

@@ -1,6 +1,5 @@
-class Entity {
-  protected collection: Collection;
-  constructor(collection: Collection) {
-    this.collection = collection;
-  }
-}
+import database from './database';
+
+export { default as database } from './database';
+
+export default database;

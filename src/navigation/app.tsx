@@ -12,19 +12,17 @@ import { AuthContext } from '@/auth';
 
 const Stack = createStackNavigator();
 
-export default (): React.ReactElement => {
-  const { user, fetching: fetchingUser } = React.useContext(AuthContext);
+export default ({ initialRouteName = 'Auth', bootstraping }): React.ReactElement => {
+  const { user } = React.useContext(AuthContext);
 
-  return !fetchingUser ? (
+  return bootstraping ? null : (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName={user ? 'Home' : 'Auth'}>
-        <React.Fragment>
-          <Stack.Screen name="Auth" component={LoginScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name="products/create" component={CreateProduct} />
-        </React.Fragment>
+      <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+        <Stack.Screen name="Auth" component={LoginScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="products/create" component={CreateProduct} />
       </Stack.Navigator>
     </NavigationContainer>
-  ) : null;
+  );
 };

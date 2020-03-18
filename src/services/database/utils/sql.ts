@@ -7,7 +7,7 @@ export const perepareInsert = (accountId: number, collection: string, data) => {
     throw new Error('Data must be a plain object');
   }
 
-  const sql = `insert into documents (id,accountId,collection,data) values(?,?,?,json_array(?))`;
+  const sql = `insert into documents (id,accountId,collection,data) values(?,?,?,json(?))`;
 
   const id = uuidv4();
 

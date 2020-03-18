@@ -1,20 +1,15 @@
 import React from 'react';
 import get from 'lodash/get';
-
 import SInfo from 'react-native-sensitive-info';
 
 export interface AuthType {
   user: object | null;
   token: string | null;
-  fetching: boolean;
   update: (user: object, token: string) => void;
   currentAccount: object | null;
-  currentAccountId: string | null;
-  userId: string | null;
 }
 
 export const useAuth = (): AuthType => {
-  const [fetching, updateFetching] = React.useState<boolean>(true);
   const [isSyncing, updateIsSyncing] = React.useState<boolean>(false);
 
   const [user, updateUser] = React.useState<object | null>(null);
@@ -23,24 +18,15 @@ export const useAuth = (): AuthType => {
 
   //SInfo.deleteItem('user', {});
 
-  const fetchInitialUser = async () => {
-    try {
-      const data = await SInfo.getItem('user', {});
-      const { user, token } = JSON.parse(data);
-      updateUser(user);
-      updateToken(token);
-    } catch (e) {}
-    updateFetching(false);
-  };
-
-  React.useEffect(() => {
-    fetchInitialUser();
-  }, []);
-
-  const update = (user: object, token: string): void => {
+  const update = (user: object, token: string) => {
     updateUser(user);
     updateToken(token);
-    SInfo.setItem('user', JSON.stringify({ user, token }), {});
+    return Promise.resolve();
+  };
+
+  const persistUser = (user, token) => {
+    update(user, token);
+    return SInfo.setItem('user', JSON.stringify({ user, token }), {});
   };
 
   const currentAccount = get(user, 'account');
@@ -49,9 +35,6 @@ export const useAuth = (): AuthType => {
     user,
     token,
     update,
-    fetching,
     currentAccount,
-    currentAccountId: get(currentAccount, 'id', null),
-    userId: get(user, 'id', null),
   };
 };
