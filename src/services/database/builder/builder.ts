@@ -72,6 +72,11 @@ class Builder {
    * @type {[type]}
    */
   public fromTable = 'documents';
+  /**
+   * Generic entity for the builder
+   * @type {String}
+   */
+  public entityName = 'document';
 
   /**
    * Creates an instance of the class

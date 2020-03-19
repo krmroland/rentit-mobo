@@ -225,7 +225,7 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - ReactNativeExceptionHandler (2.10.8):
     - React
-  - RNBootSplash (2.0.3):
+  - RNBootSplash (2.1.0):
     - React
   - RNCMaskedView (0.1.7):
     - React
@@ -235,9 +235,9 @@ PODS:
     - React
   - RNReanimated (1.7.0):
     - React
-  - RNScreens (2.2.0):
+  - RNScreens (2.3.0):
     - React
-  - RNSVG (12.0.2):
+  - RNSVG (12.0.3):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -286,7 +286,7 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - boost-for-react-native
 
 EXTERNAL SOURCES:
@@ -395,16 +395,16 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   ReactNativeExceptionHandler: 8025d98049c25f186835a3af732dd7c9974d6dce
-  RNBootSplash: cc68203d5d56bd238e75d1f071a6cb1198620810
+  RNBootSplash: fbf76a4bf1c03e9acd1dd08ce064847f26d6d8bf
   RNCMaskedView: 76c40a1d41c3e2535df09246a2b5487f04de0814
   RNDeviceInfo: 310c1f43d418d950a193c7650de2f9559c906048
   RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNScreens: 812b79d384e2bea7eebc4ec981469160d4948fd5
-  RNSVG: 9f7446f2e8fb1a5dc66a4aff58c33d367291d34c
+  RNScreens: 03bf608b92ac0acf323f47d8f5b63a8f829340c8
+  RNSVG: 7e16ddfc6e00d5aa69c9eb83e699bcce5dcb85d4
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
 PODFILE CHECKSUM: fcb4b6e68afb7df5aad138128005124312a33634
 
-COCOAPODS: 1.7.4
+COCOAPODS: 1.9.1

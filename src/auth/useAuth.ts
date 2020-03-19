@@ -7,6 +7,7 @@ export interface AuthType {
   token: string | null;
   update: (user: object, token: string) => void;
   currentAccount: object | null;
+  persistUser: Function;
 }
 
 export const useAuth = (): AuthType => {
@@ -36,5 +37,6 @@ export const useAuth = (): AuthType => {
     token,
     update,
     currentAccount,
+    persistUser,
   };
 };

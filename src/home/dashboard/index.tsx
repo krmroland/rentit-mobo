@@ -34,21 +34,21 @@ const Products = ({ navigation }) => {
         style={[tw.pX2, tw.mT3]}
         data={products}
         renderItem={({ item }) => {
-          console.log(item);
+          console.log({ item });
           return (
             <Card style={[tw.mB3]}>
               <Card.Title
-                title={item.dataField('name')}
+                title={item.field('name')}
                 left={props => (
                   <Avatar.Icon
                     {...props}
-                    icon={item.dataField('type') === 'House' ? 'shield-home-outline' : 'car'}
+                    icon={item.field('type') === 'House' ? 'shield-home-outline' : 'car'}
                     size={50}
                   />
                 )}
               />
               <Card.Content>
-                <Title>{item.dataField('name')}</Title>
+                <Title>{item.field('name')}</Title>
                 <Paragraph>Card content</Paragraph>
               </Card.Content>
 

@@ -1,12 +1,27 @@
-import { get, upperFirst, isNil, isNull } from 'lodash';
+import { get, upperFirst, isNil, isNull, has } from 'lodash';
 
-abstract class Entity {
+class Document {
+  /**
+   * The casts array
+   * @type {Object}
+   */
+  protected casts = {
+    data: 'json',
+    createdAt: 'dateTime',
+    updatedAt: 'dateTime',
+    syncedAt: 'dateTime',
+  };
+
+  public data: object;
+
   protected item;
 
-  protected casts: object = {};
+  protected builder;
 
-  constructor(item) {
+  constructor(item, builder) {
     this.item = item;
+
+    this.builder = builder;
 
     Object.keys(item).forEach(key => {
       this.setAttribute(key, item[key]);
@@ -20,7 +35,8 @@ abstract class Entity {
   setAttribute(key: string, value: string) {
     // if we have a known cast for the given key
     // we will go ahead an cast it before setting it
-    if (this.casts[key]) {
+
+    if (has(this.casts, key)) {
       this[key] = this.castAttribute(this.casts[key], key, value);
     } else {
       this[key] = value;
@@ -28,7 +44,7 @@ abstract class Entity {
   }
 
   castAttribute(type, key, value) {
-    const method = `cast${upperFirst(key)}`;
+    const method = `cast${upperFirst(type)}`;
 
     if (!this[method]) {
       throw new Error(`Cast method ${method} doesnot exist`);
@@ -44,6 +60,12 @@ abstract class Entity {
   castJson(value, key) {
     return JSON.parse(value);
   }
+  castDateTime(value) {
+    return Date.parse(value);
+  }
+  field(key, defaultValue) {
+    return get(this.data, key, defaultValue);
+  }
 }
 
-export default Entity;
+export default Document;

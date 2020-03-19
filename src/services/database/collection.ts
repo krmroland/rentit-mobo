@@ -1,6 +1,6 @@
 import collect from 'collect.js';
 
-import entities from './entities';
+import Document from './document';
 
 export default class DatabaseCollection {
   protected builder;
@@ -39,20 +39,6 @@ export default class DatabaseCollection {
     }
   }
   protected createEntity(item) {
-    return new [this.entityClass](item, this.builder);
-  }
-
-  protected get entityClass() {
-    const name = this.builder.entityName;
-
-    let entityClass = this.entities[name];
-
-    if (!entityClass) {
-      console.warn(`Entity class doesn't exist ${name}`);
-      // use the default one
-      entityClass = entities.document;
-    }
-
-    return entityClass;
+    return new Document(item, this.builder);
   }
 }

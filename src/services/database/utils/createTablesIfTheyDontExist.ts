@@ -14,7 +14,7 @@ const eventsTableSql = () => `CREATE TABLE  IF NOT EXISTS "document_events" (
   "document_id" varchar NOT NULL,
   "type" varchar string not null,
   "collection" varchar string not null,
-  "payload" TEXT,
+  "data" TEXT,
   "createdAt" timestamp NOT NULL default   CURRENT_TIMESTAMP,
   primary key("id")
 );`;
@@ -61,7 +61,7 @@ const createEventRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS document_event_auto_insert AFTER INSERT ON documents 
     WHEN new.syncedAt is null
     BEGIN
-      INSERT INTO document_events(document_id,type,collection,payload) 
+      INSERT INTO document_events(document_id,type,collection,data) 
            VALUES (new.id,'created',new.collection,${eventPayloadSql('new')});
     END;`;
 };
@@ -70,7 +70,7 @@ const updateEventRecordTrigger = () => {
   return ` CREATE TRIGGER IF NOT EXISTS documents_event_auto_update AFTER UPDATE ON documents 
     WHEN new.syncedAt is null
     BEGIN
-       INSERT INTO document_events(document_id,type,collection,payload) 
+       INSERT INTO document_events(document_id,type,collection,data) 
            VALUES (new.id,'updated',new.collection,${eventPayloadSql('new')});
     END;
 `;
@@ -80,7 +80,7 @@ const deleteEventRecordTrigger = () => {
   return `CREATE TRIGGER IF NOT EXISTS documents_event_auto_delete AFTER DELETE ON documents 
    WHEN json_extract(old.data,'$."is_server_deleted"') is null
    BEGIN
-      INSERT INTO document_events(document_id,type,collection,payload) 
+      INSERT INTO document_events(document_id,type,collection,data) 
            VALUES (new.id,'updated',new.collection,${eventPayloadSql('old')});
    END;`;
 };

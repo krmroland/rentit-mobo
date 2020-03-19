@@ -21,7 +21,7 @@ export default ({ navigation }): React.ReactElement => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const { user, fetching: fetchingUser, update: updateUser } = React.useContext(context);
+  const { user, fetching: fetchingUser, persistUser } = React.useContext(context);
 
   React.useEffect(() => {
     if (user) {
@@ -47,7 +47,7 @@ export default ({ navigation }): React.ReactElement => {
     form.post('api/v1/auth/token', {
       beforeSubmit: data => ({ ...data, device_name: deviceName.result, device_id: getUniqueId() }),
       onSuccess({ user, token }) {
-        updateUser(user, token);
+        persistUser(user, token);
       },
       onError(error) {
         const message = get(

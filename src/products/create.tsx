@@ -27,8 +27,8 @@ export default ({ navigation }) => {
       },
       {
         onSuccess(product) {
-          console.log({ product });
-          //navigation.goBack();
+          navigation.goBack();
+          // do some notification
         },
         onError(e) {
           console.log(e);
