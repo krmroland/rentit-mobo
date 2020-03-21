@@ -9,9 +9,7 @@ import { Avatar, Button, Card, Title, Paragraph, FAB, useTheme } from 'react-nat
 const Products = ({ navigation }) => {
   const theme = useTheme();
 
-  const { results: products } = useCollection('products');
-
-  console.log({ products });
+  const { results: products, refresh, refreshing } = useCollection('products');
 
   const styles = StyleSheet.create({
     fab: {
@@ -25,8 +23,10 @@ const Products = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
+        onRefresh={refresh}
         style={[tw.pX2, tw.mT3]}
         data={products}
+        refreshing={refreshing}
         renderItem={({ item }) => {
           return (
             <Card style={[tw.mB3]}>

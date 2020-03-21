@@ -5,27 +5,29 @@ import database from '../db';
 export default name => {
   const collection = database.collection(name);
 
-  let [fetching, updateFetching] = React.useState<boolean>(false);
+  const [refreshing, updateRefreshing] = React.useState<boolean>(false);
 
   const [results, updateResults] = React.useState([]);
 
-  // observable
-
-  React.useEffect(() => {
-    updateFetching(true);
+  const fetchResults = () => {
+    updateRefreshing(true);
     collection.query
       .latest('updatedAt')
       .get()
       .then(results => {
-        updateFetching(false);
+        updateRefreshing(false);
         updateResults(results.items());
       })
       .catch(error => {
-        updateFetching(false);
+        updateRefreshing(false);
         // log the error some where
-        return Promise.resolve(error);
+        return Promise.reject(error);
       });
-  }, []);
+  };
+
+  // observable
+
+  React.useEffect(fetchResults, []);
 
   React.useEffect(() => {
     let subscription = collection.insert$.subscribe(item => {
@@ -36,5 +38,5 @@ export default name => {
     return () => subscription && subscription.unsubscribe();
   });
 
-  return { results, fetching };
+  return { results, refreshing, refresh: fetchResults };
 };
