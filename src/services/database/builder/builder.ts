@@ -36,7 +36,7 @@ class Builder {
    * The orders on the query
    * @type {Array|string}
    */
-  public orders: string | Array<any>;
+  public orders: Array<object> = [];
   /**
    * The selected cokumns
    * @type {Array}
@@ -97,8 +97,8 @@ class Builder {
    * @param {[type]}  column
    * @param {Boolean} isNull =
    */
-  whereNull(column, isNull = true) {
-    this.wheres.push({ column, type: 'Nullable', isNull: !!isNull });
+  whereNull(column, boolean = 'and') {
+    this.wheres.push({ column, type: 'Nullable', boolean });
     return this;
   }
   /**
@@ -141,6 +141,26 @@ class Builder {
     return this.parseWhere('Basic', ...parameters);
   }
 
+  orderBy(column, direction = 'asc') {
+    direction = String(direction).toLowerCase();
+
+    if (!['asc', 'desc'].includes(direction)) {
+      throw new Error('Order direction must be "asc" or "desc".');
+    }
+
+    this.orders.push({ column, direction });
+
+    return this;
+  }
+
+  /**
+     * Add an "order by" clause for a timestamp to the query.
+  
+     */
+  latest(column = 'created_at') {
+    return this.orderBy(column, 'desc');
+  }
+
   /**
    * Performs a where clasuse
    * @param {Array<string>} ...parameters
@@ -162,7 +182,7 @@ class Builder {
       // If the value is null, and it's a two argument query,
       // we assume we're going for a `whereNull`.
       if (value === null) {
-        return this.whereNull(column);
+        return this.whereNull(column, boolean);
       }
     }
 
@@ -264,7 +284,7 @@ class Builder {
     this.aggregateValue = { name, columns };
 
     if (isEmpty(this.groups)) {
-      this.orders = null;
+      this.orders = [];
 
       this.bindings.orderBy = [];
     }

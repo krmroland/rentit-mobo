@@ -13,7 +13,8 @@ export default name => {
 
   React.useEffect(() => {
     updateFetching(true);
-    collection
+    collection.query
+      .latest('updatedAt')
       .get()
       .then(results => {
         updateFetching(false);

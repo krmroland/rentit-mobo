@@ -35,7 +35,7 @@ class Compiler {
     'wheres',
     //'groups',
     // 'havings',
-    // 'orders',
+    'orders',
     'limitValue',
     'offsetValue',
   ];
@@ -254,7 +254,8 @@ class Compiler {
     return collect(query.wheres)
       .map(where => {
         const whereMethod = `where${where.type}`;
-        return where.boolean + ' ' + this[whereMethod](query, where);
+
+        return `${where.boolean} ${this[whereMethod](query, where)}`;
       })
       .all();
   }
@@ -283,8 +284,30 @@ class Compiler {
     return this.wrap(where.column) + ' ' + where.operator + ' ' + value;
   }
 
+  /**
+   * Compile a "where null" clause.
+   */
+  protected whereNullable(query, where) {
+    return `${this.wrap(where.column)}  is null`;
+  }
+
   compileFromTable(query, table) {
     return `from ${table}`;
+  }
+  /**
+   * Compile the "order by" portions of the query.
+   */
+  protected compileOrders(query, orders) {
+    return isEmpty(orders) ? '' : `order by ${this.compileOrdersToArray(query, orders).join(', ')}`;
+  }
+
+  /**
+     * Compile the query orders to an array.
+     *
+    
+     */
+  protected compileOrdersToArray(query, orders) {
+    return orders.map(order => `${this.wrap(order.column)}  ${order.direction}`);
   }
 
   /**

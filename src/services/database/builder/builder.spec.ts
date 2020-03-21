@@ -33,7 +33,7 @@ describe('Builder tests', () => {
     builder.where('name', null);
 
     expect(builder.wheres).toEqual(
-      expect.arrayContaining([{ type: 'Nullable', column: 'name', isNull: true }]),
+      expect.arrayContaining([{ type: 'Nullable', column: 'name', boolean: 'and' }]),
     );
 
     expect(builder.bindings.where).toHaveLength(0);
@@ -97,5 +97,16 @@ describe('Builder tests', () => {
     );
 
     expect(insert.mock.calls[0][1]).toEqual([100, 10, 'Roland', 120, 1, 'John doe']);
+  });
+
+  test('order by', () => {
+    builder
+      .where('name', 'Roland')
+      .where('age', null)
+      .orderBy('created_at');
+
+    expect(builder.toSql()).toEqual(
+      'select * from documents where "name" = ? and "age"  is null order by "created_at"  asc',
+    );
   });
 });
