@@ -9,7 +9,7 @@ import { FieldOptions } from '../types';
 
 import { validate as validateField } from '../validation';
 
-export const useField = (options: FieldOptions) => {
+export default (options: FieldOptions) => {
   const [hasBeenValidatedAtleaseOnce, updatehasBeenValidatedAtleaseOnce] = React.useState(false);
 
   const { rules, optional, type, defaultValue } = parse(options);

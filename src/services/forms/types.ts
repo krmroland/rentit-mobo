@@ -19,6 +19,7 @@ export interface RawFieldOptions {
   messages?: object;
   type?: FieldType;
   defaultValue?: any;
+  options?: Array<string | number> | object;
 }
 
 export interface FieldOptions {
@@ -27,6 +28,7 @@ export interface FieldOptions {
   type: FieldType;
   defaultValue: any;
   optional: boolean;
+  options?: Array<string | number> | object;
 }
 
 export interface ValidationResult {

@@ -1,3 +1,4 @@
+import { RawFieldOptions } from '@/services/forms/types';
 export interface schema {
   validation: [];
 }
@@ -10,9 +11,7 @@ export interface CollectionDefinition {
 
   autoIncrementing?: boolean;
 
-  fields?: {
-    [key: string]: string;
-  };
+  fields?: Array<RawFieldOptions>;
 
   dates?: Array<string>;
 

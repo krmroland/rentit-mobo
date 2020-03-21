@@ -8,7 +8,7 @@ import { parse } from '../field';
 
 import { RawFieldOptions } from '../types';
 
-export const useForm = (fields: Array<RawFieldOptions> = []) => {
+export default (fields: Array<RawFieldOptions> = []) => {
   // first we need to parse the fields
 
   const formFields = Object.create(null);
@@ -93,7 +93,8 @@ export const useForm = (fields: Array<RawFieldOptions> = []) => {
     updateErrors,
     validate,
     withValidatedData,
-    hasErrors: hasFilledErrors(errors),
     handleChange,
+    fields: formFields,
+    hasErrors: hasFilledErrors(errors),
   };
 };

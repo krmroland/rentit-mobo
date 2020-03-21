@@ -2,27 +2,31 @@ import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Snackbar } from 'react-native-paper';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-});
+export default class SnackbarNotification extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { visible: true, message: 'Test Initial Notification' };
+  }
 
-export default () => {
-  const [visible, updateVisible] = React.useState<boolean>(false);
-  return (
-    <View style={styles.container}>
+  show(message, type = 'info') {
+    this.setState({ visible: true, message });
+    return this;
+  }
+
+  close() {
+    // this.setState({ visible: false, message: '' });
+  }
+  render() {
+    const { colors } = this.props.theme;
+    return (
       <Snackbar
         visible={this.state.visible}
-        onDismiss={() => updateVisible(false)}
-        action={{
-          label: 'Undo',
-          onPress: () => {},
-        }}
+        onDismiss={() => this.close()}
+        style={{ elevation: 0, alignItems: 'flex-start', justifyContent: 'flex-start' }}
+        duration={Snackbar.DURATION_SHORT}
       >
-        Hey there! I'm a Snackbar.
+        {this.state.message}
       </Snackbar>
-    </View>
-  );
-};
+    );
+  }
+}

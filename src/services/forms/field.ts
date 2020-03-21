@@ -20,5 +20,6 @@ export const parse = (field: RawFieldOptions): FieldOptions => {
     optional: rules.has('sometimes') || rules.has('nullable'),
     type: inferTypeFromRules(rules),
     defaultValue: field.defaultValue || '',
+    options: field.options || [],
   };
 };

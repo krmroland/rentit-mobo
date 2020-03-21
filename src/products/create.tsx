@@ -6,35 +6,23 @@ import { KeyboardAvoidingView } from '@/components';
 import { Card, Icon } from '@ui-kitten/components';
 import database from '@/data/db';
 
-import { Input, Button, Select, useDatabaseForm } from '@/services/forms';
+import { Input, Button, Select, useDatabaseCollectionForm } from '@/services/forms';
 
 import { AuthContext } from '@/auth';
 
 export default ({ navigation }) => {
-  const [submitting, updateSubmitting] = React.useState<boolean>(false);
-
-  const form = useDatabaseForm('products', [
-    // { name: 'accountId', rules: 'required', defaultValue: currentAccountId },
-    { name: 'name', rules: 'required|max:25' },
-    { name: 'currency', rules: 'required', defaultValue: 'UGX' },
-    { name: 'type', rules: 'required', defaultValue: 'House' },
-  ]);
+  const form = useDatabaseCollectionForm('products');
 
   const onSubmit = () => {
-    form.persist(
-      data => {
-        return database.collection('products').insert(data);
+    form.create({
+      onSuccess(product) {
+        navigation.goBack();
+        // do some notification
       },
-      {
-        onSuccess(product) {
-          navigation.goBack();
-          // do some notification
-        },
-        onError(e) {
-          console.log(e);
-        },
+      onError(e) {
+        console.log(e);
       },
-    );
+    });
   };
 
   return (
@@ -60,13 +48,13 @@ export default ({ navigation }) => {
             />
             <Select
               label="Currency"
-              data={[{ text: 'UGX' }, { text: 'USD' }]}
+              options={form.fields.currency.options}
               value={form.values.currency}
               onChangeText={form.handleChange('currency')}
             />
             <Select
               label="Type"
-              data={[{ text: 'House' }, { text: 'Car' }]}
+              options={form.fields.type.options}
               error={form.errors.type}
               value={form.values.type}
               onChangeText={form.handleChange('type')}
@@ -76,9 +64,9 @@ export default ({ navigation }) => {
           <Button
             iconName="plus-square-outline"
             style={[tw.mY10]}
-            loading={submitting}
+            loading={form.isBusy}
             onPress={onSubmit}
-            disabled={form.hasErrors || submitting}
+            disabled={form.hasErrors || form.isBusy}
           >
             Save
           </Button>

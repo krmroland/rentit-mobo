@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { Appbar, useTheme, Button, Paragraph, Menu, Divider } from 'react-native-paper';
 import { tw } from 'react-native-tailwindcss';
+import { Notifications } from '@/notifications';
 import Tabs from './tabs';
 
 export default ({ navigation }) => {

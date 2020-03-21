@@ -1,14 +1,17 @@
 import { CollectionType } from '@/services/database/collections';
 
-const ProductCollection: CollectionType = {
+export default {
   name: 'products',
-  fields: {
-    name: { rules: ['required'], default: 'House' },
-    currency: { rules: ['required'], default: 'House' },
-    type: { rules: ['required'], default: 'House' },
-  },
+  fields: [
+    { name: 'name', rules: ['required'] },
+    { name: 'currency', rules: ['required'], defaultValue: 'UGX', options: ['UGX', 'USD'] },
+    {
+      name: 'type',
+      rules: ['required'],
+      defaultValue: 'House',
+      options: ['House', 'Car', 'Plants'],
+    },
+  ],
 
   methods: {},
-};
-
-export default ProductCollection;
+} as CollectionType;

@@ -5,7 +5,7 @@ import first from 'lodash/first';
 
 import { useSendHttpData } from '@/services/http';
 
-import { useForm } from './useForm';
+import useForm from './useForm';
 
 const formatErrors = errors => {
   const result = {};
@@ -17,7 +17,7 @@ const formatErrors = errors => {
   return result;
 };
 
-export const useAPIForm = fields => {
+export default fields => {
   const form = useForm(fields);
 
   const { error, isBusy, send } = useSendHttpData();

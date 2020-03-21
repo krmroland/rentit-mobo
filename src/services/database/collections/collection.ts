@@ -85,8 +85,9 @@ class Collection {
   newDocument(item) {
     return new DatabaseDocument(item, false, this);
   }
-
-  protected setRules() {}
+  get fields() {
+    return this.definition.fields || [];
+  }
 
   get$() {}
 }

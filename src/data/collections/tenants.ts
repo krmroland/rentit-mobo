@@ -1,15 +1,13 @@
 import { CollectionType } from '@/services/database/collections';
 
-const TenantsCollection: CollectionType = {
+export default {
   name: 'tenants',
-  fields: {
-    first_name: { rules: ['nullable'] },
-    last_name: { rules: ['nullable'] },
-    email: { rules: ['nullable|email'] },
-    phone_number: { rules: ['nullable'] },
-  },
+  fields: [
+    { name: ' first_name', rules: ['nullable'] },
+    { name: 'last_name', rules: ['nullable'] },
+    { name: 'email', rules: ['nullable|email'] },
+    { name: 'phone_number', rules: ['nullable'] },
+  ],
 
   methods: {},
-};
-
-export default TenantsCollection;
+} as CollectionType;
