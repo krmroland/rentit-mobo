@@ -62,4 +62,40 @@ describe('Builder tests', () => {
 
     expect(builder.bindings.where).toEqual(expect.arrayContaining(['doe']));
   });
+
+  test('it correctly forms the insert query', () => {
+    const insert = jest.fn();
+
+    builder = new Builder(new Compiler(), { insert });
+
+    builder.from('documents').insert({ name: 'Roland', id: 10, age: 100 });
+
+    expect(insert.mock.calls).toHaveLength(1);
+
+    expect(insert.mock.calls[0][0]).toBe(
+      'insert into documents ("name","id","age") values (?, ?, ?)',
+    );
+
+    expect(insert.mock.calls[0][1]).toEqual(['Roland', 10, 100]);
+  });
+
+  test('it correctly forms the bulk insert query', () => {
+    const insert = jest.fn();
+
+    builder = new Builder(new Compiler(), { insert });
+
+    builder.from('documents').insert([
+      { name: 'Roland', id: 10, age: 100 },
+      { id: 1, name: 'John doe', age: 120 },
+    ]);
+
+    expect(insert.mock.calls).toHaveLength(1);
+
+    expect(insert.mock.calls[0][0]).toBe(
+      //items should be arranged alphabetically
+      'insert into documents ("age","id","name") values (?, ?, ?), (?, ?, ?)',
+    );
+
+    expect(insert.mock.calls[0][1]).toEqual([100, 10, 'Roland', 120, 1, 'John doe']);
+  });
 });

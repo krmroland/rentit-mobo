@@ -1,23 +1,17 @@
 import * as React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { tw } from 'react-native-tailwindcss';
-import database from '@/services/database';
+
+import { useCollection } from '@/data/hooks';
 
 import { Avatar, Button, Card, Title, Paragraph, FAB, useTheme } from 'react-native-paper';
 
 const Products = ({ navigation }) => {
   const theme = useTheme();
 
-  const [products, updateProducts] = React.useState([]);
+  const { results: products } = useCollection('products');
 
-  React.useEffect(() => {
-    database
-      .collection('products')
-      .get()
-      .then(results => {
-        updateProducts(results.items().all());
-      });
-  }, []);
+  console.log({ products });
 
   const styles = StyleSheet.create({
     fab: {
@@ -34,21 +28,20 @@ const Products = ({ navigation }) => {
         style={[tw.pX2, tw.mT3]}
         data={products}
         renderItem={({ item }) => {
-          console.log({ item });
           return (
             <Card style={[tw.mB3]}>
               <Card.Title
-                title={item.field('name')}
+                title={item.get('name')}
                 left={props => (
                   <Avatar.Icon
                     {...props}
-                    icon={item.field('type') === 'House' ? 'shield-home-outline' : 'car'}
+                    icon={item.get('type') === 'House' ? 'shield-home-outline' : 'car'}
                     size={50}
                   />
                 )}
               />
               <Card.Content>
-                <Title>{item.field('name')}</Title>
+                <Title>{item.get('name')}</Title>
                 <Paragraph>Card content</Paragraph>
               </Card.Content>
 

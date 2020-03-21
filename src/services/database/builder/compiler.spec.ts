@@ -18,7 +18,7 @@ describe('Compiler Tests', () => {
       .skip(2);
 
     expect(builder.toSql()).toBe(
-      `select distinct "name",json_extract("data", '$."sex"') as "sex" from documents where json_extract("data", '$."name"') = ? and "age" >= ? limit 10 offset 2`,
+      `select "name",json_extract("data", '$."sex"') as "sex" from documents where json_extract("data", '$."name"') = ? and "age" >= ? limit 10 offset 2`,
     );
   });
 

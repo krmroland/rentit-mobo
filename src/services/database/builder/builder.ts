@@ -1,8 +1,15 @@
-import { castArray, isPlainObject, isObject, isFunction, isEmpty, clone, flatten } from 'lodash';
+import {
+  castArray,
+  isPlainObject,
+  isObject,
+  isFunction,
+  isEmpty,
+  clone,
+  flatten,
+  pick,
+} from 'lodash';
 
 import Compiler from './compiler';
-
-import DatabaseCollection from '../collection';
 
 class Builder {
   /**
@@ -73,15 +80,15 @@ class Builder {
    */
   public fromTable = 'documents';
   /**
-   * Generic entity for the builder
-   * @type {String}
+   * The query result handler
+   * @type {Function|null}
    */
-  public entityName = 'document';
+  protected _resultsHandler: Function | null;
 
   /**
    * Creates an instance of the class
    */
-  constructor(database = null, compiler: Compiler = null) {
+  constructor(compiler: Compiler = null, database = null) {
     this.database = database;
     this.compiler = compiler;
   }
@@ -274,8 +281,19 @@ class Builder {
     this.select(columns);
 
     return this.database.executeSql(this.toSql(), this.getBindings()).then(results => {
-      return new DatabaseCollection(results, this);
+      return Promise.resolve(this._resultsHandler ? this._resultsHandler(results) : results);
     });
+  }
+
+  resultsHandler(callback: Function) {
+    if (!isFunction(callback)) {
+      throw new Error(
+        `resultHandler callback must be a function, type:${typeof callback} received`,
+      );
+    }
+    this._resultsHandler = callback;
+
+    return this;
   }
 
   /**
@@ -297,6 +315,39 @@ class Builder {
    */
   getBindings() {
     return flatten(Object.values(this.bindings));
+  }
+
+  /**
+   * Insert a new record into the database.
+   */
+  insert(values: Array<any> | object) {
+    // Since every insert gets treated like a batch insert, we will make sure the
+    // bindings are structured in a way that is convenient when building these
+    // inserts statements by verifying these elements are actually an array.
+    if (isEmpty(values)) {
+      return true;
+    }
+
+    if (!isPlainObject(values[0])) {
+      values = [values];
+    }
+
+    // Here, we will sort the insert keys for every record so that each insert is
+    // in the same order for the record. We need to make sure this is the case
+    // so there are not any errors or problems when inserting these records.
+    else {
+      const keys = Object.keys(values[0]).sort();
+
+      values = values.map(value => pick(value, keys));
+    }
+
+    // Finally, we will run this query against the database connection and return
+    // the results. We will need to also flatten these bindings before running
+    // the query so they are all in one huge, flattened array for execution.
+    return this.database.insert(
+      this.compiler.compileInsert(this, values),
+      flatten(values.map(v => Object.values(v))),
+    );
   }
 
   protected isQueryable(value) {

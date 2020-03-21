@@ -4,7 +4,7 @@ import { tw } from 'react-native-tailwindcss';
 import { Appbar, Avatar, Title, Snackbar } from 'react-native-paper';
 import { KeyboardAvoidingView } from '@/components';
 import { Card, Icon } from '@ui-kitten/components';
-import database from '@/services/database';
+import database from '@/data/db';
 
 import { Input, Button, Select, useDatabaseForm } from '@/services/forms';
 
@@ -23,7 +23,7 @@ export default ({ navigation }) => {
   const onSubmit = () => {
     form.persist(
       data => {
-        return database.insertCollection('products', data);
+        return database.collection('products').insert(data);
       },
       {
         onSuccess(product) {

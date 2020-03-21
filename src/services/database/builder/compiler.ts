@@ -288,11 +288,51 @@ class Compiler {
   }
 
   /**
+   * Create query parameter place-holders for an array.
+   *
+   */
+  parameterize(values) {
+    return Object.values(values)
+      .map(value => this.parameter(value))
+      .join(', ');
+  }
+
+  /**
      * Get the appropriate query parameter place-holder for a value.
   
      */
   parameter(value) {
     return this.isExpression(value) ? value.toString() : '?';
+  }
+
+  /**
+   * Compile an insert statement into SQL.
+   * @return string
+   */
+  compileInsert(query, values) {
+    // Essentially we will force every insert to be treated as a batch insert which
+    // simply makes creating the SQL easier for us since we can utilize the same
+    // basic routine regardless of an amount of records given to us to insert.
+    let table = query.fromTable;
+
+    if (isEmpty(values)) {
+      return `insert into ${table} default values`;
+    }
+
+    if (!Array.isArray(values)) {
+      values = [values];
+    }
+
+    const columns = this.columnize(Object.keys(values[0]));
+
+    // We need to build a list of parameter place-holders of values that are bound
+    // to the query. Each insert should have the exact same amount of parameter
+    // bindings so we will loop through the record and parameterize them all.
+    const parameters = collect(values)
+      .map(record => `(${this.parameterize(record)})`)
+      .implode(', ');
+
+    return `insert into ${table} (${columns}) values ${parameters}`;
   }
 }
 

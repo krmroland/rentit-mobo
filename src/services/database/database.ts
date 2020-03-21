@@ -5,6 +5,8 @@ import { Builder, Compiler } from './builder';
 
 import { createTablesIfTheyDontExist, perepareInsert } from './utils';
 
+import { Collection, CollectionDefinition } from './collections';
+
 // ensure we are never connecting to a null database
 
 const normalizeDatabaseName = given => (given ? given : 'renit.db');
@@ -30,11 +32,8 @@ class Database {
    * @type {number}
    */
   protected accountId: number = 1;
-  /**
-   * The allowed connection names
-   * @type {Array}
-   */
-  public allowedCollections = ['products', 'tenants', 'variants'];
+
+  protected collections: Map<string, Collection>;
 
   /**
    * Creates an instance of this class
@@ -42,6 +41,7 @@ class Database {
   constructor(name?: string) {
     this.name = normalizeDatabaseName(name);
     this.loadIfNotLoaded();
+    this.collections = new Map();
   }
 
   setName(name: string) {
@@ -119,13 +119,9 @@ class Database {
    * @param {string} collection
    * @param {object} data
    */
-  insertCollection(collection, data) {
-    console.log({ accountId: this.accountId });
-    const { sql, bindings } = perepareInsert(1, collection, data);
-
+  insert(sql, bindings) {
     return this.executeSql(sql, bindings).then(results => {
-      console.log({ results });
-      return Promise.resolve(results);
+      return Promise.resolve(results[0]);
     });
   }
 
@@ -138,12 +134,8 @@ class Database {
     });
   }
 
-  collection(name) {
-    return this.query.from('documents').where('collection', name);
-  }
-
-  get query() {
-    return new Builder(this, new Compiler());
+  query() {
+    return new Builder(new Compiler(), this);
   }
 
   ensureUserIdAndAccountNumberAreSet() {
@@ -157,6 +149,20 @@ class Database {
 
     return this;
   }
+
+  defineCollection(definition: CollectionDefinition) {
+    if (!this.collections.has(definition.name)) {
+      this.collections.set(definition.name, new Collection(definition, this));
+    }
+    return this;
+  }
+
+  collection(name) {
+    if (this.collections.has(name)) {
+      return this.collections.get(name);
+    }
+    throw new Error(`Undefined collection with name: ${name}`);
+  }
 }
 
-export default new Database();
+export default Database;

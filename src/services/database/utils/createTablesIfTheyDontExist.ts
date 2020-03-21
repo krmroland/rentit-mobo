@@ -16,11 +16,12 @@ const eventsTableSql = () => `CREATE TABLE  IF NOT EXISTS "document_events" (
   "collection" varchar string not null,
   "data" TEXT,
   "createdAt" timestamp NOT NULL default   CURRENT_TIMESTAMP,
+  "updatedAt" timestamp not null   default CURRENT_TIMESTAMP,
   primary key("id")
 );`;
 
-const createIndex = column => {
-  return `CREATE INDEX  IF NOT EXISTS "documents_${column}_index" ON "documents" ("${column}");`;
+const createIndex = (column, table = 'documents') => {
+  return `CREATE INDEX  IF NOT EXISTS "${table}_${column}_index" ON "${table}" ("${column}");`;
 };
 
 const createVirtualTable = () => {
@@ -89,8 +90,12 @@ export const createTablesIfTheyDontExist = () => {
   return [
     talbleSql(),
     eventsTableSql(),
-    createIndex('accountId'),
-    createIndex('collection'),
+    // indexes
+    createIndex('accountId', 'documents'),
+    createIndex('collection', 'documents'),
+
+    createIndex('document_id', 'document_events'),
+    createIndex('collection', 'document_events'),
     createVirtualTable(),
     //search triggers
     createSearchRecordTrigger(),

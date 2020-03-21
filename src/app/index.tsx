@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Provider as PaperProvider, Snackbar } from 'react-native-paper';
 import AppNavigation from '@/navigation/app';
 import { useAuth, AuthProvider, loadExistingUserFromStorage } from '@/auth';
-import { database } from '@/services/database';
+import database from '@/data/db';
 
 import { default as customMapping } from './mappings';
 import { appTheme, paper } from './themes';
