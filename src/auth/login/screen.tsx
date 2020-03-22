@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useDeviceName, getUniqueId } from 'react-native-device-info';
+import { useDeviceName } from 'react-native-device-info';
 import get from 'lodash/get';
 import { tw } from 'react-native-tailwindcss';
 import { Layout, StyleService, Text, useStyleSheet, Icon, Card } from '@ui-kitten/components';
@@ -21,7 +21,7 @@ export default ({ navigation }): React.ReactElement => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const { user, fetching: fetchingUser, persistUser } = React.useContext(context);
+  const { user, persistUserData } = React.useContext(context);
 
   React.useEffect(() => {
     if (user) {
@@ -45,10 +45,8 @@ export default ({ navigation }): React.ReactElement => {
     updateError(null);
 
     form.post('api/v1/auth/token', {
-      beforeSubmit: data => ({ ...data, device_name: deviceName.result, device_id: getUniqueId() }),
-      onSuccess({ user, token }) {
-        persistUser(user, token);
-      },
+      beforeSubmit: data => ({ ...data, device_name: deviceName.result }),
+      onSuccess: persistUserData,
       onError(error) {
         const message = get(
           error,
@@ -110,7 +108,7 @@ export default ({ navigation }): React.ReactElement => {
       <Button
         style={styles.signInButton}
         iconName="unlock-outline"
-        loading={form.isBusy || deviceName.loading || fetchingUser}
+        loading={form.isBusy || deviceName.loading}
         onPress={onPressLoginButton}
         disabled={form.hasErrors}
       >

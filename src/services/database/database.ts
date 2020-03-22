@@ -32,7 +32,10 @@ class Database {
    * @type {number}
    */
   protected accountId: number = 1;
-
+  /**
+   * The available collections
+   * @type {Map<string, Collection>}
+   */
   protected collections: Map<string, Collection>;
 
   /**
@@ -43,8 +46,11 @@ class Database {
     this.loadIfNotLoaded();
     this.collections = new Map();
   }
-
-  setName(name: string) {
+  /**
+   * Sets a database name
+   * @param {string} name
+   */
+  setName(name: string = null) {
     let newName = normalizeDatabaseName(name);
 
     if (newName !== this.name) {
@@ -53,11 +59,6 @@ class Database {
       this.connection = null;
     }
 
-    return this;
-  }
-
-  setAccount(account) {
-    this.accountId = get(account, 'id');
     return this;
   }
 
@@ -72,12 +73,8 @@ class Database {
     });
   }
 
-  loadUserDatabase(user, account) {
-    if (user) {
-      return this.setAccount(account)
-        .setName(`renit_${user.id}.db`)
-        .loadIfNotLoaded();
-    }
+  loadUserDatabase(user) {
+    return this.setName(user ? `renit_${user.id}.db` : null).loadIfNotLoaded();
   }
 
   /**
@@ -125,10 +122,10 @@ class Database {
     });
   }
 
-  executeSql(sql, bindings = []) {
+  executeSql(sql, bindings = [], builder) {
     return this.acquireConnection().then(connection => {
       if (__DEV__) {
-        console.log({ sql, bindings });
+        console.log({ sql, bindings, database: this.name });
       }
       return connection.executeSql(sql, bindings).then(results => Promise.resolve(results[0]));
     });

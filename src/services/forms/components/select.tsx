@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import IsFunction from 'lodash/IsFunction';
+import { IsFunction, isPlainObject } from 'lodash';
 import { Select, Icon } from '@ui-kitten/components';
 
 import useInputProps from './useInputProps';
@@ -11,20 +11,29 @@ export default props => {
   const { options, value = null, onChangeText = () => {}, style, ...selectProps } = props;
 
   const handleSelected = value => {
-    onChangeText(value ? value.text : null);
+    onChangeText(value ? value.key : null);
   };
+
+  const isUsingKeyValueOptions = isPlainObject(options);
 
   let data = [];
 
-  if (Array.isArray(options)) {
-    options.forEach(text => data.push({ text }));
+  // we wull use the text as the key
+  // for plain arrays make it consistent
+  // with values that actually have keys
+
+  if (isUsingKeyValueOptions) {
+    data = Object.keys(options).map(key => ({ key, text: options[key] }));
+  } else if (Array.isArray(options)) {
+    data = options.map(text => ({ text, key: text }));
   }
+
+  // we wull have to use the key for the current value
 
   return (
     <Select
       data={data}
-      {...props}
-      selectedOption={{ text: value }}
+      selectedOption={{ text: isUsingKeyValueOptions ? options[value] : value }}
       onSelect={handleSelected}
       {...inputProps}
     />

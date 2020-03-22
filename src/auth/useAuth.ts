@@ -1,42 +1,54 @@
 import React from 'react';
-import get from 'lodash/get';
+import { get, compact, map } from 'lodash';
 import SInfo from 'react-native-sensitive-info';
 
-export interface AuthType {
-  user: object | null;
-  token: string | null;
-  update: (user: object, token: string) => void;
-  currentAccount: object | null;
-  persistUser: Function;
-}
+import database from '@/data/db';
+
+import { AuthType, RawUser } from './types';
+
+const prepareAccount = owner => {};
+
+const getAccounts = user => {
+  if (!user) {
+    return { currentId: null, all: [] };
+  }
+
+  let all = {};
+
+  //  organizationAccounts
+  [user, ...get(user, 'organizations', [])]
+    .filter(owner => owner.account)
+    .forEach(({ account, name }) => {
+      all[account.id] = name;
+    });
+
+  return {
+    all,
+    currentId: get(user, 'current_account_id', get(user, 'account.id')), // use the current main account by default
+  };
+};
 
 export const useAuth = (): AuthType => {
   const [isSyncing, updateIsSyncing] = React.useState<boolean>(false);
 
-  const [user, updateUser] = React.useState<object | null>(null);
+  const [data, updateData] = React.useState<RawUser>({ user: null, token: null });
 
-  const [token, updateToken] = React.useState<string | null>(null);
+  const updateUserData = data => {
+    return database.loadUserDatabase(get(data, 'user')).then(() => updateData(data));
+  };
 
   //SInfo.deleteItem('user', {});
 
-  const update = (user: object, token: string) => {
-    updateUser(user);
-    updateToken(token);
-    return Promise.resolve();
+  const persistUserData = data => {
+    return SInfo.setItem('user', JSON.stringify(data), {}).then(() => {
+      return updateUserData(data);
+    });
   };
-
-  const persistUser = (user, token) => {
-    update(user, token);
-    return SInfo.setItem('user', JSON.stringify({ user, token }), {});
-  };
-
-  const currentAccount = get(user, 'account');
 
   return {
-    user,
-    token,
-    update,
-    currentAccount,
-    persistUser,
+    ...data,
+    accounts: getAccounts(data.user),
+    updateUserData,
+    persistUserData,
   };
 };

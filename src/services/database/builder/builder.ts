@@ -300,7 +300,7 @@ class Builder {
 
     this.select(columns);
 
-    return this.database.executeSql(this.toSql(), this.getBindings()).then(results => {
+    return this.database.executeSql(this.toSql(), this.getBindings(), this).then(results => {
       return Promise.resolve(this._resultsHandler ? this._resultsHandler(results) : results);
     });
   }

@@ -38,6 +38,12 @@ export default ({ navigation }) => {
 
         <View style={[tw.mT2, tw.pX5, tw.flex, tw.itemsStretch, tw.justifyBetween, tw.flex1]}>
           <View style={[tw.flex, tw.mT2]}>
+            <Select
+              label="Account"
+              options={form.fields.accountId.options}
+              value={form.values.accountId}
+              onChangeText={form.handleChange('accountId')}
+            />
             <Input
               label="Name"
               placeholder="Product name"

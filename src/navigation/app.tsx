@@ -12,12 +12,12 @@ import { AuthContext } from '@/auth';
 
 const Stack = createStackNavigator();
 
-export default ({ initialRouteName = 'Auth', bootstraping }): React.ReactElement => {
+export default ({ bootstraping }): React.ReactElement => {
   const { user } = React.useContext(AuthContext);
 
-  return bootstraping ? null : (
+  return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName={initialRouteName}>
+      <Stack.Navigator headerMode="none" initialRouteName={user ? 'Home' : 'Auth'}>
         <Stack.Screen name="Auth" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Settings" component={Settings} />

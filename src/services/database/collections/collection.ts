@@ -50,14 +50,20 @@ class Collection {
       .resultsHandler(result => new QueryResult(result, this));
   }
 
-  insert(data, accountId) {
+  insert(data) {
+    const { accountId, ...otherFields } = data;
+
+    if (!accountId) {
+      throw Error('missing accountId');
+    }
+
     // validate the data
     // insert the data
     const item = {
       id: new Date().toISOString(),
       collection: this.definition.name,
-      data: JSON.stringify(data),
-      accountId: 1,
+      data: JSON.stringify(otherFields),
+      accountId,
     };
 
     return this.query.insert(item).then(() => {

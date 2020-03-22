@@ -1,5 +1,7 @@
 import React from 'react';
 
-const context = React.createContext<null | object>(null);
+import { AuthType } from './types';
+
+const context = React.createContext<AuthType | null>(null);
 
 export default context;
