@@ -2,11 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Dashboard from './dashboard';
-import Tenants from './tenants';
 
-const HomeScreen = () => <View></View>;
-const SettingsScreen = () => <View></View>;
+const HomeScreen = () => <View />;
+const SettingsScreen = () => <View />;
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,9 +29,9 @@ export default () => {
         },
       }}
     >
-      <Tab.Screen name="Home" component={Dashboard} />
-      <Tab.Screen name="Payments" component={HomeScreen} />
-      <Tab.Screen name="Tenants" component={Tenants} />
+      <Tab.Screen name="Home" component={require('@/app/dashboard').default} />
+      <Tab.Screen name="Payments" component={require('@/app/dashboard').default} />
+      <Tab.Screen name="Tenants" component={require('@/app/tenants').default} />
     </Tab.Navigator>
   );
 };

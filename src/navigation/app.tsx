@@ -3,12 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { createStackNavigator } from '@react-navigation/stack';
 
-import LoginScreen from '@/auth/login/screen';
-import HomeScreen from '@/home';
-import Settings from '@/settings';
-import CreateProduct from '@/products/create';
-
-import { AuthContext } from '@/auth';
+import { AuthContext } from '@/app/auth';
 
 const Stack = createStackNavigator();
 
@@ -18,10 +13,11 @@ export default ({ bootstraping }): React.ReactElement => {
   return (
     <NavigationContainer>
       <Stack.Navigator headerMode="none" initialRouteName={user ? 'Home' : 'Auth'}>
-        <Stack.Screen name="Auth" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Settings" component={Settings} />
-        <Stack.Screen name="products/create" component={CreateProduct} />
+        <Stack.Screen name="Auth" component={require('@/app/auth/login').default} />
+        <Stack.Screen name="Home" component={require('@/app/home').default} />
+        <Stack.Screen name="Settings" component={require('@/app/settings').default} />
+        <Stack.Screen name="products/create" component={require('@/app/products/create').default} />
+        <Stack.Screen name="tenants/create" component={require('@/app/tenants/create').default} />
       </Stack.Navigator>
     </NavigationContainer>
   );

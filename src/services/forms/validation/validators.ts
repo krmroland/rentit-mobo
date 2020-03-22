@@ -20,6 +20,13 @@ export default {
   min(value, rule: ValidatableRule, field: FieldOptions): boolean {
     return getLengthByType(value, field) >= rule.parameters[0];
   },
+  sometimes(): boolean {
+    return true;
+  },
+  nullable(): boolean {
+    return true;
+  },
+
   max(value, rule: ValidatableRule, field: FieldOptions): boolean {
     return getLengthByType(value, field) <= rule.parameters[0];
   },

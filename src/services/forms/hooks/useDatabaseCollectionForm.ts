@@ -2,7 +2,7 @@ import React from 'react';
 
 import { get, isFunction } from 'lodash';
 import database from '@/data/db';
-import { AuthContext } from '@/auth';
+import { AuthContext } from '@/app/auth';
 import useForm from './useForm';
 
 import { FormOptions } from './types';

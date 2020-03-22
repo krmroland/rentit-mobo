@@ -52,7 +52,7 @@ const Products = ({ navigation }) => {
             </Card>
           );
         }}
-      ></FlatList>
+      />
       <FAB icon="plus" onPress={() => navigation.navigate('products/create')} style={styles.fab} />
     </View>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import BootSplash from 'react-native-bootsplash';
 import AppNavigation from '@/navigation/app';
-import { useAuth, AuthContext, loadExistingUserFromStorage } from '@/auth';
+import { useAuth, AuthContext, loadExistingUserFromStorage } from '@/app/auth';
 
 export default () => {
   const [bootstraping, updateBootstraping] = React.useState<boolean>(true);

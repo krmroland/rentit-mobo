@@ -7,7 +7,7 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { mapping } from '@eva-design/eva';
 import { useNavigation } from '@react-navigation/native';
 import { Provider as PaperProvider, Snackbar } from 'react-native-paper';
-import { AuthProvider } from '@/auth';
+import { AuthProvider } from '@/app/auth';
 
 import { default as customMapping } from './mappings';
 

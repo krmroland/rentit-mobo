@@ -28,8 +28,6 @@ export default props => {
     data = options.map(text => ({ text, key: text }));
   }
 
-  // we wull have to use the key for the current value
-
   return (
     <Select
       data={data}

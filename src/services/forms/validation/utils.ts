@@ -8,7 +8,7 @@ import messages from './messages';
 import { Message, FieldOptions, ValidationResult } from '../types';
 
 export const isAValidRule = (name: string): boolean => {
-  return has(messages, name);
+  return name === 'nullable' || has(messages, name);
 };
 
 export const getValidationMessage = (name, customMessages: object): Message | null => {

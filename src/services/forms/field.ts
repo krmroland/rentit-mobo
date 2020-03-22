@@ -5,7 +5,7 @@ const inferTypeFromRules = (rules): FieldType => {
   switch (true) {
     case rules.has('numeric'):
       return FieldType.numeric;
-    case rules.has('Array'):
+    case rules.has('array'):
       return FieldType.array;
     default:
       return FieldType.string;
@@ -14,10 +14,11 @@ const inferTypeFromRules = (rules): FieldType => {
 
 export const parse = (field: RawFieldOptions): FieldOptions => {
   const rules: Map<string, ValidatableRule> = parseRules(field);
+
   return {
     name: field.name,
     rules: Array.from(rules.values()),
-    optional: rules.has('sometimes') || rules.has('nullable'),
+    optional: !rules.has('required'),
     type: inferTypeFromRules(rules),
     defaultValue: field.defaultValue || '',
     options: field.options || [],

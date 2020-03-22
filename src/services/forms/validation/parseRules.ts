@@ -8,7 +8,7 @@ const wrap = (rules: RawFieldOptions['rules']): Array<string> => {
 export default (field: RawFieldOptions): Map<string, ValidatableRule> => {
   const result = new Map();
 
-  wrap(field.rules).forEach(rule => {
+  wrap(field.rules || []).forEach(rule => {
     const parts = String(rule).split(':');
 
     const name = parts[0];

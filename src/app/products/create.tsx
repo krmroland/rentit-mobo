@@ -8,8 +8,6 @@ import database from '@/data/db';
 
 import { Input, Button, Select, useDatabaseCollectionForm } from '@/services/forms';
 
-import { AuthContext } from '@/auth';
-
 export default ({ navigation }) => {
   const form = useDatabaseCollectionForm('products');
 
