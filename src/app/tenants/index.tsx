@@ -1,15 +1,21 @@
 import * as React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { sample } from 'lodash';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { tw } from 'react-native-tailwindcss';
 
 import { useCollection } from '@/data/hooks';
 
-import { Avatar, Button, Card, Title, Paragraph, FAB, useTheme } from 'react-native-paper';
+import { List, FAB, useTheme, Avatar, Divider, Title } from 'react-native-paper';
 
 const Products = ({ navigation }) => {
   const theme = useTheme();
 
-  const { results: products, refresh, refreshing } = useCollection('tenants');
+  const colors = ['#1976d2', '#1b5e20', '#FF4242', '#931060', '#002D4B', '#101793'];
+
+  const { results: tenants, refresh, refreshing } = useCollection('tenants', {
+    orderBy: 'data->first_name',
+    direction: 'asc',
+  });
 
   const styles = StyleSheet.create({
     fab: {
@@ -21,35 +27,45 @@ const Products = ({ navigation }) => {
     },
   });
   return (
-    <View style={{ flex: 1 }}>
+    <View style={[tw.flex1, tw.bgWhite]}>
       <FlatList
         onRefresh={refresh}
-        style={[tw.pX2, tw.mT3]}
-        data={products}
+        style={[tw.mT3]}
+        data={tenants}
         refreshing={refreshing}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
+          // get a random color
+
+          const colorIndex = index < colors.length ? index : colors.length % index;
+
           return (
-            <Card style={[tw.mB3]}>
-              <Card.Title
-                title={item.get('name')}
-                left={props => (
-                  <Avatar.Icon
-                    {...props}
-                    icon={item.get('type') === 'House' ? 'shield-home-outline' : 'car'}
-                    size={50}
-                  />
+            <React.Fragment>
+              <List.Item
+                onPress={() => console.log('pressed')}
+                title={`${item.get('first_name')} ${item.get('last_name')}`}
+                description={item.get('phone_number') || item.get('email') || 'N/A'}
+                titleStyle={[tw.fontBold]}
+                descriptionStyle={[tw.textBase, tw.mT1]}
+                left={({ style }) => (
+                  <View
+                    style={[tw.justifyCenter, tw.itemsCenter, tw.mR1, style]}
+                    pointerEvents="box-none"
+                  >
+                    <Avatar.Icon
+                      icon="account"
+                      size={50}
+                      style={{ backgroundColor: colors[colorIndex] }}
+                    />
+                  </View>
+                )}
+                right={({ style }) => (
+                  <View style={[tw.mT3]} pointerEvents="box-none">
+                    <Text> UGX 1000 </Text>
+                  </View>
                 )}
               />
-              <Card.Content>
-                <Title>{item.get('name')}</Title>
-                <Paragraph>Card content</Paragraph>
-              </Card.Content>
-
-              <Card.Actions>
-                <Button>Cancel</Button>
-                <Button>Ok</Button>
-              </Card.Actions>
-            </Card>
+              <Divider style={[tw.mT3]} />
+            </React.Fragment>
           );
         }}
       />

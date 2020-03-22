@@ -1,7 +1,8 @@
+import { startCase } from 'lodash';
 import { Message, ValidatableRule, FieldOptions } from '../types';
 
 const replaceAttributePlaceHolder = (message: Message, field: FieldOptions): string => {
-  return String(message).replace(':attribute', field.name || 'field');
+  return String(message).replace(':attribute', startCase(field.name || 'field').toLowerCase());
 };
 
 const replacers = {

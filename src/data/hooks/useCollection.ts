@@ -2,7 +2,11 @@ import React from 'react';
 import { range } from 'lodash';
 import database from '../db';
 
-export default name => {
+interface Options {
+  orderBy?: string;
+  direction?: string;
+}
+export default (name, options: Options = {}) => {
   const collection = database.collection(name);
 
   const [refreshing, updateRefreshing] = React.useState<boolean>(false);
@@ -12,7 +16,7 @@ export default name => {
   const fetchResults = () => {
     updateRefreshing(true);
     collection.query
-      .latest('updatedAt')
+      .orderBy(options.orderBy || 'updatedAt', options.direction || 'desc')
       .get()
       .then(results => {
         updateRefreshing(false);

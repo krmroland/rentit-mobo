@@ -30,7 +30,7 @@ export default ({ navigation }) => {
       </Appbar.Header>
       <KeyboardAvoidingView style={[tw.bgWhite]}>
         <View style={[tw.bgGray100, tw.pY5, tw.itemsCenter]}>
-          <Avatar.Icon icon="shield-account-outline" size={100} />
+          <Avatar.Icon icon="account-plus-outline" size={100} />
         </View>
 
         <View style={[tw.mT2, tw.pX5, tw.flex, tw.itemsStretch, tw.justifyBetween, tw.flex1]}>
@@ -58,14 +58,14 @@ export default ({ navigation }) => {
             />
             <Input
               label="Email"
-              iconName="book-outline"
+              iconName="email-outline"
               value={form.values.email}
               onChangeText={form.handleChange('email')}
               error={form.errors.email}
             />
             <Input
               label="Phone Number"
-              iconName="book-outline"
+              iconName="phone-outline"
               value={form.values.phone_number}
               onChangeText={form.handleChange('phone_number')}
               error={form.errors.phone_number}
@@ -73,7 +73,7 @@ export default ({ navigation }) => {
           </View>
 
           <Button
-            iconName="plus-square-outline"
+            iconName="person-add-outline"
             style={[tw.mY10]}
             loading={form.isBusy}
             onPress={onSubmit}
