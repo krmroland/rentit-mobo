@@ -37,7 +37,7 @@ export const useAuth = (): AuthType => {
     return database.loadUserDatabase(get(data, 'user')).then(() => updateData(data));
   };
 
-  //SInfo.deleteItem('user', {});
+  SInfo.deleteItem('user', {});
 
   const persistUserData = data => {
     return SInfo.setItem('user', JSON.stringify(data), {}).then(() => {
